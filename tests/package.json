@@ -1,0 +1,16 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "Tests project for our monorepo",
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS='--loader ts-node/esm' npx cucumber-js --config ./tests/cucumber.cjs"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "@playwright/test": "^1.51.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
