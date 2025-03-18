@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug - Print Current Directory
         run: |
           echo "Current directory:"
           pwd
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug - Print Current Directory
         run: |
           echo "Current directory:"
           pwd
@@ -81,7 +81,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug - Print Current Directory
         run: |
           echo "Current directory:"
           pwd
@@ -102,7 +102,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug - Print Current Directory
         run: |
           echo "Current directory:"
           pwd
