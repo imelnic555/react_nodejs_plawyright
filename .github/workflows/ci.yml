@@ -51,7 +51,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug Print Current Directory
         run: |
           echo "Current directory:"
           pwd
@@ -80,7 +80,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug Print Current Directory
         run: |
           echo "Current directory:"
           pwd
@@ -101,7 +101,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug: Print Current Directory
+      - name: Debug Print Current Directory
         run: |
           echo "Current directory:"
           pwd
@@ -123,8 +123,7 @@ jobs:
           sleep 3
           echo "Backend logs:"
           tail -n 20 backend.log || echo "No logs available."
-        &  # ✅ Runs backend in the background
-
+       
       # ✅ Start Frontend in Parallel
       - name: Start Frontend
         working-directory: frontend
@@ -134,8 +133,7 @@ jobs:
           sleep 3
           echo "Frontend logs:"
           tail -n 20 frontend.log || echo "No logs available."
-        &  # ✅ Runs frontend in the background
-
+     
       # ✅ Wait for Backend & Frontend to Start
       - name: Wait for Services
         run: |
