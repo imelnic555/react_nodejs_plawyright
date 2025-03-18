@@ -23,7 +23,7 @@ jobs:
           cd frontend
           rm -rf node_modules package-lock.json
           npm install
-          npm install react react-dom react-router-dom
+          npm install react@latest react-dom@latest react-router-dom@latest react/jsx-runtime
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
           npm install --save-exact typescript@4.9.5
