@@ -20,10 +20,10 @@ const fetchUsers = async (): Promise<User[]> => {
 };
 
 const UserList: React.FC = () => {
-    const { data: users, isLoading, error } = useQuery<User[]>(['users'], fetchUsers);
+    // const { data: users, isLoading, error } = useQuery<User[]>(['users'], fetchUsers);
 
-    if (isLoading) return <p>Loading users...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    // if (isLoading) return <p>Loading users...</p>;
+    // if (error) return <p>Error: {error.message}</p>;
 
     return (
         <div>
