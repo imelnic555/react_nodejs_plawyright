@@ -107,7 +107,7 @@ jobs:
           cd tests
           rm -rf node_modules package-lock.json
           npm install
-          # Install Playwright and its dependencies
+          # Install Playwright and its dependencies1
           npm install --save-dev @playwright/test
           npx playwright install --with-deps
           # Install Cucumber.js
