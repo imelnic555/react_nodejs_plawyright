@@ -26,7 +26,7 @@ jobs:
           npm install --save-dev @types/node
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
-          npm install @nestjs/platform-fastify @fastify/cors class-validator
+          npm install @nestjs/platform-fastify @fastify/cors class-validator class-transformer
 
       - name: Install frontend dependencies
         run: |
@@ -35,6 +35,7 @@ jobs:
           npm install react react-dom react-router-dom
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/react-router-dom
+          npm install --save-dev @types/node
 
       - name: Install test dependencies
         run: |
