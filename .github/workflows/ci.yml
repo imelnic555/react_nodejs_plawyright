@@ -62,7 +62,7 @@ jobs:
           npm install @nestjs/common
           npm install @nestjs/core
           npm run build
-          mkdir -p dist  # ✅ Ensure dist/ folder exists
+          mkdir -p dist
           ls -lah dist || echo "❌ Build failed! dist/ folder is missing!"
 
       - name: Upload Backend Build Artifact
@@ -113,7 +113,7 @@ jobs:
           echo "Checking if backend build exists before deployment..."
           if [ ! -f dist/main.js ]; then
             echo "❌ ERROR: Backend build is missing! Aborting deployment."
-            ls -lah dist  # ✅ Show all files in dist/ for debugging
+            ls -lah dist
             exit 1
           fi
           echo "✅ Backend build found. Proceeding with deployment."
@@ -122,20 +122,20 @@ jobs:
         working-directory: backend
         run: |
           echo "Deploying backend..."
-          scp -r dist/ user@your-server:/var/www/backend
-          ssh user@your-server "pm2 restart backend || pm2 start dist/main.js --name backend"
+          scp -r dist/ ubuntu@github.com:imelnic555/react_nodejs_plawyright/backend
+          ssh ubuntu@github.com "pm2 restart backend || pm2 start dist/main.js --name backend"
 
       - name: Deploy Frontend
         working-directory: frontend
         run: |
           echo "Deploying frontend..."
-          scp -r build/ user@your-server:/var/www/frontend
-          ssh user@your-server "pm2 restart frontend || pm2 start serve --name frontend -- -s build -l 5173"
+          scp -r build/ ubuntu@github.com:imelnic555/react_nodejs_plawyright/frontend
+          ssh ubuntu@github.com "pm2 restart frontend || pm2 start serve --name frontend -- -s build -l 5173"
 
       - name: Wait for services to start
         run: |
           echo "Waiting for backend and frontend to be ready..."
-          timeout 120 npx wait-on http://your-server:3000 http://your-server:5173 || { echo "❌ Backend or frontend did not start in time!"; exit 1; }
+          timeout 120 npx wait-on http://github.com:imelnic555/react_nodejs_plawyright/backend http://github.com:imelnic555/react_nodejs_plawyright/frontend || { echo "❌ Backend or frontend did not start in time!"; exit 1; }
 
   run_cucumber_tests:
     runs-on: ubuntu-latest
@@ -159,12 +159,12 @@ jobs:
       - name: Check Backend Status
         run: |
           echo "Checking if backend is running..."
-          curl -I http://your-server:3000 || echo "❌ Backend is NOT running!"
+          curl -I http://github.com:imelnic555/react_nodejs_plawyright/backend || echo "❌ Backend is NOT running!"
 
       - name: Check Frontend Status
         run: |
           echo "Checking if frontend is running..."
-          curl -I http://your-server:5173 || echo "❌ Frontend is NOT running!"
+          curl -I http://github.com:imelnic555/react_nodejs_plawyright/frontend || echo "❌ Frontend is NOT running!"
 
       - name: Install Playwright browsers
         run: |
@@ -187,5 +187,5 @@ jobs:
       - name: Shut down backend & frontend after tests
         run: |
           echo "Shutting down backend and frontend after tests..."
-          ssh user@your-server "pm2 stop backend || echo 'Backend not running!'"
-          ssh user@your-server "pm2 stop frontend || echo 'Frontend not running!'"
+          ssh ubuntu@github.com "pm2 stop backend || echo 'Backend not running!'"
+          ssh ubuntu@github.com "pm2 stop frontend || echo 'Frontend not running!'"
