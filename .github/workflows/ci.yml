@@ -29,6 +29,8 @@ jobs:
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/platform-fastify @fastify/cors class-validator class-transformer
           npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
+          npm install @nestjs/common
+          npm install @nestjs/core
 
       - name: Install frontend dependencies
         run: |
