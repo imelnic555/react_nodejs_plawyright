@@ -60,7 +60,7 @@ jobs:
         run: |
           echo "Current working directory:"
           pwd  # ✅ Print current folder
-          echo "Listing backend folder contents:"
+          echo "Listing backend folder contents before building:"
           ls -lah  # ✅ Check files before building
 
       - name: Build backend
