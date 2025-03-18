@@ -9,64 +9,68 @@ jobs:
   install_dependencies:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout your own repository (standard)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 23
           cache: 'npm'
 
-      # 3. Install Frontend Dependencies (React & React Router)
+      # 1. Install Frontend Dependencies
       - name: Install frontend dependencies
         run: |
           cd frontend
-          # Remove old lockfiles
+          # Remove old lockfiles + modules
           rm -rf node_modules package-lock.json
-          # Basic npm install
+
+          # Base npm install
           npm install
-          # Force React 17+ and React Router
+
+          # Ensure React + React Router (latest)
           npm install react@latest react-dom@latest react-router-dom@latest
-          # Type definitions & dev tools
+
+          # Type definitions + dev tools
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
           npm install --save-exact typescript@4.9.5
           npm install --save-dev @typescript-eslint/eslint-plugin@8.26.1 @typescript-eslint/parser@8.26.1
           npm install --save-dev @vitejs/plugin-react
+
           # Deduplicate
           npm dedupe
 
-      # 4. Ensure tsconfig.json for React 17+ Transform
+      # 2. Ensure tsconfig.json for React 17+ Transform
       - name: Ensure correct tsconfig.json settings
         run: |
           cd frontend
           echo '{
             "compilerOptions": {
               "jsx": "react-jsx",
-              "module": "Node16",
-              "moduleResolution": "node16",
+              "moduleResolution": "node",
               "strict": true
             }
           }' > tsconfig.json
 
-      # 5. Install Backend Dependencies (NestJS)
+      # 3. Install Backend Dependencies (NestJS)
       - name: Install backend dependencies
         run: |
           cd backend
           rm -rf node_modules package-lock.json dist
           npm install
+
+          # NestJS, TypeORM, and related packages
           npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
           npm install @nestjs/platform-express @nestjs/platform-fastify
           npm install --save-dev @types/node
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/config @nestjs/swagger class-validator class-transformer
+
           npm run build || echo "(If needed, build command here)"
 
-      # 6. Install Test Dependencies
+      # 4. Install Test Dependencies
       - name: Install test dependencies
         run: |
           cd tests
