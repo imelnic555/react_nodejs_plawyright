@@ -1,10 +1,10 @@
-
 name: CI Pipeline
 
 on:
   push:
     branches:
-      - fetaure/setup_project  # Retaining the original branch name as specified
+      - feature/setup_project  # Retaining the original branch name as specified
+
 jobs:
   install_dependencies:
     runs-on: ubuntu-latest
@@ -15,12 +15,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Ensure compatibility with React 18
-          cache: 'npm'
+          node-version: 23  # Specifying Node.js version 23 as per your requirement
+          cache: npm
 
       - name: Install frontend dependencies
+        working-directory: frontend
         run: |
-          cd frontend
           # Remove old lockfiles and modules
           rm -rf node_modules package-lock.json
           # Install dependencies
@@ -48,8 +48,8 @@ jobs:
           fi
 
       - name: Install backend dependencies
+        working-directory: backend
         run: |
-          cd backend
           rm -rf node_modules package-lock.json dist
           # Install dependencies
           npm install
@@ -67,13 +67,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Ensure compatibility with React 18
-          cache: 'npm'
+          node-version: 23  # Specifying Node.js version 23 as per your requirement
+          cache: npm
 
       - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build
 
   build_backend:
     runs-on: ubuntu-latest
@@ -85,13 +84,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Ensure compatibility with React 18
-          cache: 'npm'
+          node-version: 23  # Specifying Node.js version 23 as per your requirement
+          cache: npm
 
       - name: Build backend
-        run: |
-          cd backend
-          npm run build
+        working-directory: backend
+        run: npm run build
 
   run_tests:
     runs-on: ubuntu-latest
@@ -103,12 +101,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Ensure compatibility with React 18
-          cache: 'npm'
+          node-version: 23  # Specifying Node.js version 23 as per your requirement
+          cache: npm
 
-      - name: Run tests
-        run: |
-          cd backend
-          npm test
-          cd ../frontend
-          npm test
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm test
