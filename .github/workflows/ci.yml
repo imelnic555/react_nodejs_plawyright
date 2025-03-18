@@ -21,25 +21,28 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd backend
+          rm -rf node_modules package-lock.json
           npm install
           npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
-          npm install --save-dev @types/node
+          npm install --save-dev @types/node @types/typeorm
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/platform-fastify @fastify/cors class-validator class-transformer
+          npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
 
       - name: Install frontend dependencies
         run: |
           cd frontend
+          rm -rf node_modules package-lock.json
           npm install
           npm install react react-dom react-router-dom
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
-          npm install --save-dev @types/react-router-dom
           npm install --save-dev @types/node
 
       - name: Install test dependencies
         run: |
           cd tests
+          rm -rf node_modules package-lock.json
           npm install --no-fund
           npm install --save-dev tsx @cucumber/cucumber wait-on
           npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
