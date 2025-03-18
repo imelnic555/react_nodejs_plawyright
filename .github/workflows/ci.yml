@@ -168,16 +168,4 @@ jobs:
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          npx cucumber-js --import tsx
-
-  stop_backend_and_frontend:
-    runs-on: ubuntu-latest
-    needs: run_tests
-    steps:
-      - name: Stop Backend & Frontend
-        run: |
-          echo "Stopping backend..."
-          kill $(cat backend/backend_pid) || echo "Backend was not running."
-
-          echo "Stopping frontend..."
-          kill $(cat frontend/frontend_pid) || echo "Frontend was not running."
+          npx @cucumber/cucumber-js --import tsx
