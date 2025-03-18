@@ -7,4 +7,8 @@ export default defineConfig({
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js"], // ✅ Ensure .tsx is resolved
   },
+  build: {
+    outDir: "dist", // ✅ Ensure the build output goes to frontend/dist/
+    emptyOutDir: true, // ✅ Clears old files before rebuilding
+  },
 });
