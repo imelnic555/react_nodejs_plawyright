@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 23  # Use latest Node.js for native TypeScript support
+          node-version: 23  # Use latest Node.js for native TypeScript support1
           cache: npm
 
       - name: Install backend dependencies
