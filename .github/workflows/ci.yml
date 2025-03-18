@@ -63,7 +63,8 @@ jobs:
         working-directory: backend
         run: |
           echo "Building backend..."
-          
+          npm install @nestjs/common
+          npm install @nestjs/core
           npm run build
 
       - name: Cache backend build
