@@ -1,10 +1,9 @@
-
 name: CI Pipeline
 
 on:
   push:
     branches:
-      - fetaure/setup_project  # Retaining the original branch name 
+      - fetaure/setup_project  # Using your branch name
 
 jobs:
   install_dependencies:
@@ -16,32 +15,29 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 23  # Use latest Node.js for native TypeScript support1
+          node-version: 23
           cache: npm
 
       - name: Install backend dependencies
         working-directory: backend
         run: |
           echo "Installing backend dependencies..."
-          rm -rf node_modules
-          rm -f package-lock.json
+          rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install
-          npm i --save @nestjs/config
           npm install @nestjs/common
           npm install @nestjs/core
           npm install @nestjs/mapped-types
-          npm install
-          npm i --save @nestjs/config
-          
+
       - name: Install frontend dependencies
         working-directory: frontend
         run: |
           echo "Installing frontend dependencies..."
-          rm -rf node_modules
-          rm -f package-lock.json
+          rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install
+          npm install @nestjs/common
+          npm install @nestjs/core
           npm install --save-dev vite-tsconfig-paths
 
       - name: Install test dependencies
@@ -50,7 +46,7 @@ jobs:
           echo "Installing test dependencies..."
           npm install --no-fund
           npm install --save-dev tsx @cucumber/cucumber wait-on
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
+          npx wait-on --version || echo "❌ wait-on not installed!"
 
   build_backend:
     runs-on: ubuntu-latest
@@ -65,15 +61,11 @@ jobs:
           echo "Building backend..."
           npm install @nestjs/common
           npm install @nestjs/core
-          npm run build
-
-      - name: Cache backend build
-        uses: actions/cache@v4
-        with:
-          path: backend/dist/
-          key: ${{ runner.os }}-backend-dist-${{ hashFiles('backend/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-backend-dist-
+          npm install
+          npm run build || { echo "❌ Backend build failed!"; exit 1; }
+          
+          echo "Verifying backend build output..."
+          ls -lah dist || { echo "❌ dist/ folder is missing after build!"; exit 1; }
 
   build_frontend:
     runs-on: ubuntu-latest
@@ -88,75 +80,66 @@ jobs:
           echo "Building frontend..."
           npm install @nestjs/common
           npm install @nestjs/core
+          npm install
           npm run build
+          ls -lah build || echo "❌ Build failed! build/ folder is missing."
 
-      - name: Cache frontend build
-        uses: actions/cache@v4
-        with:
-          path: frontend/build/
-          key: ${{ runner.os }}-frontend-build-${{ hashFiles('frontend/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-frontend-build-
-
-  run_cucumber_tests:
+  deploy_and_run_tests:
     runs-on: ubuntu-latest
     needs: [build_backend, build_frontend]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 23
-          cache: npm
-
-      - name: Install test dependencies
-        working-directory: tests
-        run: |
-          echo "Installing test dependencies..."
-          npm install --no-fund
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
-          ls -l node_modules/ || echo "❌ node_modules missing!"
-          ls -l support/ || echo "❌ world.ts missing!"
-
-      - name: Start backend
+      # ✅ Start Backend
+      - name: Start Backend
         working-directory: backend
         run: |
+          echo "Checking for dist/main.js before starting..."
+          if [ ! -f dist/main.js ]; then
+            echo "❌ ERROR: Backend build is missing! Cannot start backend."
+            ls -lah dist  # Show contents for debugging
+            exit 1
+          fi
+
           echo "Starting backend..."
           npm run start > backend.log 2>&1 & echo $! > backend_pid
           sleep 5
           echo "Backend logs:"
-          cat backend.log
+          cat backend.log || echo "No logs available."
 
-      - name: Start frontend
+      # ✅ Start Frontend
+      - name: Start Frontend
         working-directory: frontend
         run: |
           echo "Starting frontend..."
-          npm run dev & echo $! > frontend_pid
+          npm run dev > frontend.log 2>&1 & echo $! > frontend_pid
+          sleep 5
+          echo "Frontend logs:"
+          cat frontend.log || echo "No logs available."
 
+      # ✅ Wait for Services to Be Ready
       - name: Wait for services
         run: |
           echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
+          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173 || { echo "❌ Backend or frontend did not start in time!"; exit 1; }
 
-      - name: Install Playwright browsers
-        run: |
-          echo "Installing Playwright browsers..."
-          npx playwright install --with-deps
+      # ✅ Install Playwright Browsers
+      - name: Install Playwright
+        run: npx playwright install --with-deps
 
-      - name: Run Cucumber tests
+      # ✅ Run Tests
+      - name: Run Cucumber Tests
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
           npx cucumber-js --import tsx
 
-      - name: Stop backend
+      # ✅ Stop Backend & Frontend
+      - name: Stop Backend & Frontend
         run: |
           echo "Stopping backend..."
-          kill $(cat backend/backend_pid) || echo "❌ Failed to stop backend!"
+          kill $(cat backend/backend_pid) || echo "Backend was not running."
 
-      - name: Stop frontend
-        run: |
           echo "Stopping frontend..."
-          kill $(cat frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
+          kill $(cat frontend/frontend_pid) || echo "Frontend was not running."
