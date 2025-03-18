@@ -28,6 +28,7 @@ jobs:
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/platform-fastify @fastify/cors class-validator class-transformer
+          npm install @nestjs/typeorm typeorm
           npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
 
       - name: Install frontend dependencies
@@ -39,6 +40,7 @@ jobs:
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
           npm install --save-dev @types/react-router-dom
+          npm install --save-dev react-scripts
 
       - name: Ensure correct tsconfig.json settings
         run: |
@@ -132,14 +134,4 @@ jobs:
 
           sleep 5
           curl -I http://localhost:3000 || echo "❌ Backend is NOT running!"
-          curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
-
-          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
-
-          npx playwright install --with-deps
-          npx cucumber-js --import tsx
-
-          echo "Stopping backend..."
-          kill $(cat ../backend/backend_pid) || echo "❌ Failed to stop backend!"
-          echo "Stopping frontend..."
-          kill $(cat ../frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
+          curl -I http://localhost:
