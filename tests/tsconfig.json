@@ -9,11 +9,10 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
     "noEmit": false,
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./tests"]
   },
-  "include": ["src/**/*", "tests/**/*", "global.d.ts"],
+  "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
 }
