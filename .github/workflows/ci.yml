@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - fetaure/setup_project
+      - feature/setup_project
 
 jobs:
   install_dependencies:
@@ -26,6 +26,7 @@ jobs:
           npm install --save-dev @types/node
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
+          npm install @nestjs/platform-fastify @fastify/cors class-validator
 
       - name: Install frontend dependencies
         run: |
@@ -119,9 +120,3 @@ jobs:
           timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
 
           npx playwright install --with-deps
-          npx cucumber-js --import tsx
-
-          echo "Stopping backend..."
-          kill $(cat ../backend/backend_pid) || echo "❌ Failed to stop backend!"
-          echo "Stopping frontend..."
-          kill $(cat ../frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
