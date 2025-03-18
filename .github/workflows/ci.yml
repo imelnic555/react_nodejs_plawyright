@@ -40,7 +40,7 @@ jobs:
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
           npm install --save-dev @types/react-router-dom
-          npm install --save-dev react-scripts
+          npm install --save-exact typescript@5.8.0
 
       - name: Ensure correct tsconfig.json settings
         run: |
@@ -134,4 +134,14 @@ jobs:
 
           sleep 5
           curl -I http://localhost:3000 || echo "❌ Backend is NOT running!"
-          curl -I http://localhost:
+          curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
+
+          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
+
+          npx playwright install --with-deps
+          npx cucumber-js --import tsx
+
+          echo "Stopping backend..."
+          kill $(cat ../backend/backend_pid) || echo "❌ Failed to stop backend!"
+          echo "Stopping frontend..."
+          kill $(cat ../frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
