@@ -39,7 +39,8 @@ jobs:
           rm -rf node_modules package-lock.json  # Remove old dependencies
           npm cache clean --force  # Ensure a clean install
           npm install --legacy-peer-deps
-          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber wait-on playwright
+          npm install --save-dev @playwright/test @cucumber/cucumber tsx ts-node typescript @types/node
+          npm list @playwright/test || { echo "❌ ERROR: @playwright/test is missing!"; exit 1; }
           npm list @cucumber/cucumber || { echo "❌ ERROR: @cucumber/cucumber is missing!"; exit 1; }
 
   build_backend:
@@ -151,21 +152,15 @@ jobs:
           echo "Compiling TypeScript files..."
           npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
 
-      - name: Debug Cucumber Tags
-        run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
-
-      - name: Fix Cucumber Execution Permissions
+      - name: Ensure `global.d.ts` Exists
         working-directory: tests
         run: |
-          if [ -f node_modules/.bin/cucumber-js ]; then
-            chmod +x node_modules/.bin/cucumber-js
-          else
-            echo "❌ ERROR: cucumber-js binary not found! Trying reinstall..."
-            npm install @cucumber/cucumber --save-dev
-            if [ ! -f node_modules/.bin/cucumber-js ]; then
-              echo "❌ ERROR: cucumber-js still missing after reinstall!"
-              exit 1
-            fi
+          echo "Checking if global.d.ts exists..."
+          if [ ! -f global.d.ts ]; then
+            echo "❌ ERROR: global.d.ts is missing! Creating..."
+            echo "declare module '@cucumber/cucumber';" > global.d.ts
+            echo "declare module '@playwright/test';" >> global.d.ts
+            echo "declare module '../support/world.mjs';" >> global.d.ts
           fi
 
       - name: Run Cucumber Tests
