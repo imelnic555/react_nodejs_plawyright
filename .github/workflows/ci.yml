@@ -95,73 +95,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-frontend-build-
 
-  run_cucumber_tests:
-    runs-on: ubuntu-latest
-    needs: [build_backend, build_frontend]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Show Node.js version
-        run: node -v
-
-      - name: Ensure test dependencies are installed
-        working-directory: tests
-        run: |
-          echo "Checking test dependencies..."
-          npm install --no-fund
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
-          ls -l node_modules/ || echo "❌ node_modules missing!"
-          ls -l support/ || echo "❌ world.ts missing!"
-
-      - name: Start backend
-        working-directory: backend
-        run: |
-          echo "Starting backend..."
-          npm run start > backend.log 2>&1 & echo $! > backend_pid
-          sleep 5
-          echo "Backend logs:"
-          cat backend.log
-
-      - name: Start frontend
-        working-directory: frontend
-        run: |
-          echo "Starting frontend..."
-          npm run dev > frontend.log 2>&1 & echo $! > frontend_pid
-
-      - name: Debugging Check if backend & frontend are running
-        run: |
-          sleep 5
-          echo "Checking if backend is running..."
-          curl -I http://localhost:3000 || echo "❌ Backend is NOT running!"
-          echo "Checking if frontend is running..."
-          curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
-
-      - name: Wait until backend & frontend are ready (Timeout 60s)
-        run: |
-          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173 || { echo "❌ Backend or frontend did not start in time!"; exit 1; }
-
-      - name: Install Playwright browsers
-        run: |
-          echo "Installing Playwright browsers..."
-          npx playwright install --with-deps
-
-      - name: Run Cucumber tests
-        working-directory: tests
-        run: |
-          echo "Running Cucumber tests..."
-          npx cucumber-js --import tsx
-
-      - name: Stop backend & frontend after tests
-        run: |
-          echo "Stopping backend..."
-          kill $(cat backend/backend_pid) || echo "❌ Failed to stop backend!"
-          echo "Stopping frontend..."
-          kill $(cat frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
-
   deploy:
     runs-on: ubuntu-latest
-    needs: [run_cucumber_tests]
+    needs: [build_backend, build_frontend]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -185,8 +121,60 @@ jobs:
           scp -r build/ user@your-server:/var/www/frontend
           ssh user@your-server "pm2 restart frontend || pm2 start serve --name frontend -- -s build -l 5173"
 
-      - name: Shut Down Services After Deployment
+      - name: Wait for services to start
         run: |
-          echo "Shutting down backend and frontend after deployment..."
+          echo "Waiting for backend and frontend to be ready..."
+          timeout 120 npx wait-on http://your-server:3000 http://your-server:5173 || { echo "❌ Backend or frontend did not start in time!"; exit 1; }
+
+  run_cucumber_tests:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Node.js version
+        run: node -v
+
+      - name: Verify test dependencies
+        working-directory: tests
+        run: |
+          echo "Checking test dependencies..."
+          npm install --no-fund
+          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
+          ls -l node_modules/ || echo "❌ node_modules missing!"
+          ls -l support/ || echo "❌ world.ts missing!"
+
+      - name: Check backend status
+        run: |
+          echo "Checking if backend is running..."
+          curl -I http://your-server:3000 || echo "❌ Backend is NOT running!"
+
+      - name: Check frontend status
+        run: |
+          echo "Checking if frontend is running..."
+          curl -I http://your-server:5173 || echo "❌ Frontend is NOT running!"
+
+      - name: Install Playwright browsers
+        run: |
+          echo "Installing Playwright browsers..."
+          npx playwright install --with-deps
+
+      - name: Run Cucumber tests
+        working-directory: tests
+        run: |
+          echo "Running Cucumber tests..."
+          npx cucumber-js --import tsx
+
+  shutdown_services:
+    runs-on: ubuntu-latest
+    needs: [run_cucumber_tests]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Shut down backend & frontend after tests
+        run: |
+          echo "Shutting down backend and frontend after tests..."
           ssh user@your-server "pm2 stop backend || echo 'Backend not running!'"
           ssh user@your-server "pm2 stop frontend || echo 'Frontend not running!'"
