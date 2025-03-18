@@ -9,39 +9,50 @@ jobs:
   install_dependencies:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout your own repository (standard)
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 23
           cache: 'npm'
 
+      # 3. Install Frontend Dependencies (React & React Router)
       - name: Install frontend dependencies
         run: |
           cd frontend
+          # Remove old lockfiles
           rm -rf node_modules package-lock.json
+          # Basic npm install
           npm install
+          # Force React 17+ and React Router
           npm install react@latest react-dom@latest react-router-dom@latest
+          # Type definitions & dev tools
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
           npm install --save-exact typescript@4.9.5
           npm install --save-dev @typescript-eslint/eslint-plugin@8.26.1 @typescript-eslint/parser@8.26.1
           npm install --save-dev @vitejs/plugin-react
+          # Deduplicate
           npm dedupe
 
+      # 4. Ensure tsconfig.json for React 17+ Transform
       - name: Ensure correct tsconfig.json settings
         run: |
           cd frontend
           echo '{
             "compilerOptions": {
               "jsx": "react-jsx",
-              "moduleResolution": "node",
+              "module": "Node16",
+              "moduleResolution": "node16",
               "strict": true
             }
           }' > tsconfig.json
 
+      # 5. Install Backend Dependencies (NestJS)
       - name: Install backend dependencies
         run: |
           cd backend
@@ -55,6 +66,7 @@ jobs:
           npm install @nestjs/config @nestjs/swagger class-validator class-transformer
           npm run build || echo "(If needed, build command here)"
 
+      # 6. Install Test Dependencies
       - name: Install test dependencies
         run: |
           cd tests
