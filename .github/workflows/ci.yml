@@ -37,8 +37,9 @@ jobs:
         run: |
           echo "Installing test dependencies..."
           npm install --no-fund
-          npm install --save-dev tsx @cucumber/cucumber wait-on
+          npm install --save-dev tsx @cucumber/cucumber wait-on playwright
           npm list @cucumber/cucumber || echo "❌ @cucumber/cucumber is missing!"
+          npm list playwright || echo "❌ Playwright is missing!"
 
   build_backend:
     runs-on: ubuntu-latest
@@ -158,7 +159,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        working-directory: tests
+        run: |
+          echo "Installing Playwright browsers..."
+          npx playwright install --with-deps
 
       - name: Run Cucumber Tests
         working-directory: tests
