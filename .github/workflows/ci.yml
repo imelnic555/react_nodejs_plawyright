@@ -164,7 +164,7 @@ jobs:
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          npx @cucumber/cucumber-js --import tsx
+          npx cucumber-js --import tsx
 
   stop_backend_and_frontend:
     runs-on: ubuntu-latest
