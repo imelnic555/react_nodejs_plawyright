@@ -34,6 +34,7 @@ jobs:
           npm install
           npm install react react-dom react-router-dom
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
+          npm install --save-dev @types/react-router-dom
 
       - name: Install test dependencies
         run: |
@@ -120,3 +121,9 @@ jobs:
           timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
 
           npx playwright install --with-deps
+          npx cucumber-js --import tsx
+
+          echo "Stopping backend..."
+          kill $(cat ../backend/backend_pid) || echo "❌ Failed to stop backend!"
+          echo "Stopping frontend..."
+          kill $(cat ../frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
