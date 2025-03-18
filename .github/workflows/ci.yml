@@ -35,20 +35,6 @@ jobs:
           npm config set registry https://registry.npmjs.org/
           npm cache clean --force
 
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          rm -rf node_modules package-lock.json dist
-          npm install --legacy-peer-deps
-          npm install @nestjs/common@latest @nestjs/core@latest @nestjs/typeorm@latest typeorm@latest
-          npm install @nestjs/platform-express @nestjs/platform-fastify
-          npm install --save-dev @types/node
-          npm install @nestjs/jwt passport @nestjs/passport passport-jwt
-          npm install --save-dev @types/passport-jwt
-          npm install @nestjs/config @nestjs/swagger class-validator class-transformer
-          npm rebuild
-          npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
-
       - name: Install frontend dependencies
         run: |
           cd frontend
@@ -73,6 +59,20 @@ jobs:
               "strict": true
             }
           }' > tsconfig.json
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          rm -rf node_modules package-lock.json dist
+          npm install --legacy-peer-deps
+          npm install @nestjs/common@latest @nestjs/core@latest @nestjs/typeorm@latest typeorm@latest
+          npm install @nestjs/platform-express @nestjs/platform-fastify
+          npm install --save-dev @types/node
+          npm install @nestjs/jwt passport @nestjs/passport passport-jwt
+          npm install --save-dev @types/passport-jwt
+          npm install @nestjs/config @nestjs/swagger class-validator class-transformer
+          npm rebuild
+          npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
 
       - name: Install test dependencies
         run: |
