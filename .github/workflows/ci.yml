@@ -18,22 +18,26 @@ jobs:
           node-version: 23
           cache: 'npm'
 
-      - name: Force Git to Always Use HTTPS
+      - name: Completely Disable SSH for Git and NPM
         run: |
           git config --global --unset url."git@github.com:".insteadOf || true
           git config --global --replace-all url."https://github.com/".insteadOf "git@github.com:"
           git config --global --unset core.sshCommand || true
-          git config --global core.sshCommand ""
+          git config --global core.sshCommand " "
           git config --global --list
-
-      - name: Prevent NPM from Using SSH for GitHub Dependencies
-        run: |
           npm config delete proxy || true
           npm config delete https-proxy || true
           npm config delete ssh || true
-          npm config set strict-ssl false
+          npm config set strict-ssl true
           npm config set registry https://registry.npmjs.org/
           npm cache clean --force
+
+      - name: Authenticate GitHub for Private Repos
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
 
       - name: Install frontend dependencies
         run: |
