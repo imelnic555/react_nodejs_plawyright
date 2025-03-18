@@ -20,7 +20,7 @@ jobs:
 
       - name: Configure Git to use HTTPS instead of SSH
         run: |
-          git config --global url."https://".insteadOf "git@"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install backend dependencies
         run: |
@@ -44,7 +44,6 @@ jobs:
           npm install react@latest react-dom@latest react-router-dom@latest
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
-          npm install --save react/jsx-runtime
           npm install --save-exact typescript@4.9.5
           npm install --save-dev @typescript-eslint/eslint-plugin@8.26.1 @typescript-eslint/parser@8.26.1
           npm install --save-dev @vitejs/plugin-react
