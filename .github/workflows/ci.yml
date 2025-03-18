@@ -122,9 +122,16 @@ jobs:
         run: |
           echo "Starting backend..."
           npm run start > backend.log 2>&1 & echo $! > backend_pid &
-          sleep 3
-          echo "Backend logs:"
+          sleep 5
+          echo "Checking backend logs..."
           tail -n 20 backend.log || echo "No logs available."
+
+          echo "Verifying backend API..."
+          if ! curl -Is http://localhost:3000/health | head -n 1 | grep "HTTP/1.1 200"; then
+            echo "❌ ERROR: Backend API is not responding correctly!"
+            cat backend.log  # Print backend logs for debugging
+            exit 1
+          fi
 
       # ✅ Start Frontend in Background (Ensure Vite is Installed)
       - name: Start Frontend
@@ -154,10 +161,11 @@ jobs:
       - name: Wait for Services
         run: |
           echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173 || {
+          timeout 60 npx wait-on http://localhost:3000/health http://localhost:5173 || {
             echo "❌ Backend or frontend did not start in time!"
             curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
-            curl -I http://localhost:3000 || echo "❌ Backend is NOT running!"
+            curl -I http://localhost:3000/health || echo "❌ Backend is NOT running!"
+            curl http://localhost:3000/health || echo "❌ Backend returned unexpected response!"
             exit 1
           }
 
