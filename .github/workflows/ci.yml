@@ -1,10 +1,9 @@
-
 name: CI Pipeline
 
 on:
   push:
     branches:
-      - fetaure/setup_project
+      - fetaure/setup_project  # Retaining the original branch name as specified
 
 jobs:
   install_dependencies:
@@ -26,13 +25,10 @@ jobs:
           rm -rf node_modules package-lock.json
           # Install base dependencies
           npm install
-          # Ensure react-router-dom and its types are installed
-          npm install react-router-dom
-          npm install --save-dev @types/react-router-dom
-          # Ensure React and ReactDOM are installed
-          npm install react react-dom
-          # Ensure TypeScript and necessary types are installed
-          npm install --save-dev typescript @types/react @types/react-dom
+          # Ensure react, react-dom, and react-router-dom are installed
+          npm install react react-dom react-router-dom
+          # Ensure TypeScript and necessary type definitions are installed
+          npm install --save-dev typescript @types/react @types/react-dom @types/react-router-dom
           # Verify tsconfig.json settings
           if [ ! -f tsconfig.json ]; then
             echo '{
@@ -103,48 +99,37 @@ jobs:
           node-version: 23
           cache: 'npm'
 
-      - name: Install test dependencies
-        run: |
-          cd tests
-          rm -rf node_modules package-lock.json
-          npm install
-          # Install Playwright and its dependencies1
-          npm install --save-dev @playwright/test
-          npx playwright install --with-deps
-          # Install Cucumber.js
-          npm install --save-dev @cucumber/cucumber
-          # Install wait-on utility
-          npm install --save-dev wait-on
-
-      - name: Start backend
-        run: |
-          cd backend
-          npm run start &
-          echo $! > backend_pid
-        env:
-          NODE_ENV: production
-
-      - name: Start frontend
-        run: |
-          cd frontend
-          npm run dev &
-          echo $! > frontend_pid
-        env:
-          NODE_ENV: production
-
-      - name: Wait for services to be ready
-        run: |
-          wait-on http://localhost:3000 http://localhost:5173
-
       - name: Run Cucumber tests
         run: |
+          echo "Running Cucumber tests..."
+          node -v
+
           cd tests
-          npx cucumber-js --require-module ts-node/register --require **/*.ts
+          npm install
+          ls -l node_modules/ || echo "❌ node_modules missing!"
+          ls -l support/ || echo "❌ world.ts missing!"
 
-      - name: Stop backend
-        run: |
-          kill $(cat backend_pid) || echo "Backend process not running."
+          cd ../backend
+          echo "Starting backend..."
+          npm run start > backend.log 2>&1 & echo $! > backend_pid
+          sleep 5
+          cat backend.log
 
-      - name: Stop frontend
-        run: |
-          kill $(cat frontend_pid) || echo "Frontend process not running."
+          cd ../frontend
+          echo "Starting frontend..."
+          npm run dev > frontend.log 2>&1 & echo $! > frontend_pid
+          cd ../tests
+
+          sleep 5
+          curl -I http://localhost:3000 || echo "❌ Backend is NOT running!"
+          curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
+
+          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
+
+          npx playwright install --with-deps
+          npx cucumber-js --import tsx
+
+          echo "Stopping backend..."
+          kill $(cat ../backend/backend_pid) || echo "❌ Failed to stop backend!"
+          echo "Stopping frontend..."
+          kill $(cat ../frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
