@@ -4,91 +4,98 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - fetaure/setup_project
+      - fetaure/setup_project  # Retaining the original branch name 
 
 jobs:
   install_dependencies:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 23
-          cache: 'npm'
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          # Remove old lockfiles and modules
-          rm -rf node_modules package-lock.json
-          # Install base dependencies
-          npm install
-          # Ensure react-router-dom and its types are installed
-          npm install react-router-dom
-          npm install --save-dev @types/react-router-dom
-          # Ensure React and ReactDOM are installed
-          npm install react react-dom
-          # Ensure TypeScript and necessary types are installed
-          npm install --save-dev typescript @types/react @types/react-dom
-          # Verify tsconfig.json settings
-          if [ ! -f tsconfig.json ]; then
-            echo '{
-              "compilerOptions": {
-                "jsx": "react-jsx",
-                "moduleResolution": "node",
-                "strict": true
-              }
-            }' > tsconfig.json
-          else
-            if ! grep -q '"jsx": "react-jsx"' tsconfig.json; then
-              echo 'Please ensure your tsconfig.json has "jsx": "react-jsx" under compilerOptions.'
-            fi
-          fi
+          node-version: 23  # Use latest Node.js for native TypeScript support1
+          cache: npm
 
       - name: Install backend dependencies
+        working-directory: backend
         run: |
-          cd backend
-          rm -rf node_modules package-lock.json dist
+          echo "Installing backend dependencies..."
+          rm -rf node_modules
+          rm -f package-lock.json
+          npm cache clean --force
           npm install
-
-  build_frontend:
-    runs-on: ubuntu-latest
-    needs: install_dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 23
-          cache: 'npm'
-
-      - name: Build frontend
+          npm i --save @nestjs/config
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm install @nestjs/mapped-types
+          npm install
+          npm i --save @nestjs/config
+          
+      - name: Install frontend dependencies
+        working-directory: frontend
         run: |
-          cd frontend
-          npm run build
+          echo "Installing frontend dependencies..."
+          rm -rf node_modules
+          rm -f package-lock.json
+          npm cache clean --force
+          npm install
+          npm install --save-dev vite-tsconfig-paths
+
+      - name: Install test dependencies
+        working-directory: tests
+        run: |
+          echo "Installing test dependencies..."
+          npm install --no-fund
+          npm install --save-dev tsx @cucumber/cucumber wait-on
+          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
 
   build_backend:
     runs-on: ubuntu-latest
     needs: install_dependencies
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 23
-          cache: 'npm'
+        uses: actions/checkout@v4
 
       - name: Build backend
+        working-directory: backend
         run: |
-          cd backend
+          echo "Building backend..."
+          
           npm run build
+
+      - name: Cache backend build
+        uses: actions/cache@v4
+        with:
+          path: backend/dist/
+          key: ${{ runner.os }}-backend-dist-${{ hashFiles('backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-dist-
+
+  build_frontend:
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          echo "Building frontend..."
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm run build
+
+      - name: Cache frontend build
+        uses: actions/cache@v4
+        with:
+          path: frontend/build/
+          key: ${{ runner.os }}-frontend-build-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-build-
 
   run_cucumber_tests:
     runs-on: ubuntu-latest
@@ -101,50 +108,54 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 23
-          cache: 'npm'
+          cache: npm
 
       - name: Install test dependencies
+        working-directory: tests
         run: |
-          cd tests
-          rm -rf node_modules package-lock.json
-          npm install
-          # Install Playwright and its dependencies1
-          npm install --save-dev @playwright/test
-          npx playwright install --with-deps
-          # Install Cucumber.js
-          npm install --save-dev @cucumber/cucumber
-          # Install wait-on utility
-          npm install --save-dev wait-on
+          echo "Installing test dependencies..."
+          npm install --no-fund
+          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
+          ls -l node_modules/ || echo "❌ node_modules missing!"
+          ls -l support/ || echo "❌ world.ts missing!"
 
       - name: Start backend
+        working-directory: backend
         run: |
-          cd backend
-          npm run start &
-          echo $! > backend_pid
-        env:
-          NODE_ENV: production
+          echo "Starting backend..."
+          npm run start > backend.log 2>&1 & echo $! > backend_pid
+          sleep 5
+          echo "Backend logs:"
+          cat backend.log
 
       - name: Start frontend
+        working-directory: frontend
         run: |
-          cd frontend
-          npm run dev &
-          echo $! > frontend_pid
-        env:
-          NODE_ENV: production
+          echo "Starting frontend..."
+          npm run dev & echo $! > frontend_pid
 
-      - name: Wait for services to be ready
+      - name: Wait for services
         run: |
-          wait-on http://localhost:3000 http://localhost:5173
+          echo "Waiting for backend and frontend to be ready..."
+          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
+
+      - name: Install Playwright browsers
+        run: |
+          echo "Installing Playwright browsers..."
+          npx playwright install --with-deps
 
       - name: Run Cucumber tests
+        working-directory: tests
         run: |
-          cd tests
-          npx cucumber-js --require-module ts-node/register --require **/*.ts
+          echo "Running Cucumber tests..."
+          npx cucumber-js --import tsx
 
       - name: Stop backend
         run: |
-          kill $(cat backend_pid) || echo "Backend process not running."
+          echo "Stopping backend..."
+          kill $(cat backend/backend_pid) || echo "❌ Failed to stop backend!"
 
       - name: Stop frontend
         run: |
-          kill $(cat frontend_pid) || echo "Frontend process not running."
+          echo "Stopping frontend..."
+          kill $(cat frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
