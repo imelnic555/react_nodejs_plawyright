@@ -18,38 +18,17 @@ jobs:
           node-version: 23
           cache: 'npm'
 
-      - name: Ensure Git and NPM Use HTTPS
-        run: |
-          git config --global --unset url."git@github.com:".insteadOf || true
-          git config --global --replace-all url."https://github.com/".insteadOf "git@github.com:"
-          git config --global --unset core.sshCommand || true
-          git config --global core.sshCommand " "
-          npm config delete proxy || true
-          npm config delete https-proxy || true
-          npm config delete ssh || true
-          npm config set strict-ssl true
-          npm config set registry https://registry.npmjs.org/
-          npm cache clean --force
-
-      - name: Authenticate GitHub for Private Dependencies
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
-          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
-
       - name: Install frontend dependencies
         run: |
           cd frontend
           rm -rf node_modules package-lock.json
-          npm install --legacy-peer-deps
-          npm install react@latest react-dom@latest react-router-dom@latest
+          npm install
+          npm install react react-dom react-router-dom
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
           npm install --save-exact typescript@4.9.5
           npm install --save-dev @typescript-eslint/eslint-plugin@8.26.1 @typescript-eslint/parser@8.26.1
           npm install --save-dev @vitejs/plugin-react
-          npm install --save react/jsx-runtime
           npm dedupe
 
       - name: Ensure correct tsconfig.json settings
@@ -67,23 +46,21 @@ jobs:
         run: |
           cd backend
           rm -rf node_modules package-lock.json dist
-          npm install --legacy-peer-deps
-          npm install @nestjs/common@latest @nestjs/core@latest @nestjs/typeorm@latest typeorm@latest
+          npm install
+          npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
           npm install @nestjs/platform-express @nestjs/platform-fastify
           npm install --save-dev @types/node
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/config @nestjs/swagger class-validator class-transformer
-          npm rebuild
-          npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
+          npm run build || echo "(If needed, build command here)"
 
       - name: Install test dependencies
         run: |
           cd tests
           rm -rf node_modules package-lock.json
-          npm install --legacy-peer-deps
+          npm install
           npm install --save-dev tsx @cucumber/cucumber wait-on
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
 
   build_frontend:
     runs-on: ubuntu-latest
@@ -140,8 +117,7 @@ jobs:
           node -v
 
           cd tests
-          npm install --legacy-peer-deps
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
+          npm install
           ls -l node_modules/ || echo "❌ node_modules missing!"
           ls -l support/ || echo "❌ world.ts missing!"
 
