@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "Node16",
-    "moduleResolution": "node16",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,6 +13,6 @@
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./tests"]
   },
-  "include": ["./**/*.ts", "global.d.ts"],
+  "include": ["./**/*.ts", "./**/*.mjs"],
   "exclude": ["node_modules"]
 }

@@ -1,21 +1,39 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { world } from '../support/world.mjs';  // Ensure correct import path
+import { CustomWorld } from '../support/world.mjs'; // ✅ Correct import
 
-Given('I am on the login page', async function () {
-    await world.init();
-    await world.page.goto('http://localhost:5173/');
+Given('I am on the login page', async function (this: CustomWorld) {
+    await this.init(); // ✅ Ensure browser is initialized
+
+    if (!this.page) {
+        throw new Error("❌ ERROR: Playwright `page` is null. Ensure the browser is initialized.");
+    }
+
+    await this.page.goto('http://localhost:5173/login'); // ✅ Navigate to login page
 });
 
-When('I enter {string} and {string}', async function (email, password) {
-    await world.page.fill('input[placeholder="Email"]', email);
-    await world.page.fill('input[placeholder="Password"]', password);
+When('I enter {string} and {string}', async function (this: CustomWorld, email: string, password: string) {
+    await this.page.fill('input[name="email"]', email);
+    await this.page.fill('input[name="password"]', password);
+    await this.page.click('button[type="submit"]');
 });
 
-When('I click login', async function () {
-    // await world.page.click('Login');
-    await world.page.locator('button:has-text("Login")').click();
+Then('I should be redirected to the user list page', async function (this: CustomWorld) {
+    await expect(this.page).toHaveURL(/users/); // ✅ Ensure redirection
 });
-Then('I should be logged in successfully', async function () {
-    await expect(world.page.locator('text=Here will be the list of users')).toBeVisible({ timeout: 10000 });
+When('I click login', async function (this: CustomWorld) {
+    if (!this.page) {
+        throw new Error("❌ ERROR: Playwright `page` is null. Ensure the browser is initialized.");
+    }
+
+    await this.page.locator('button:has-text("Login")').click();
+});
+
+Then('I should be logged in successfully', async function (this: CustomWorld) {
+    if (!this.page) {
+        throw new Error("❌ ERROR: Playwright `page` is null. Ensure the browser is initialized.");
+    }
+
+    await expect(this.page.locator('text=Here will be the list of users'))
+        .toBeVisible({ timeout: 10000 });
 });
