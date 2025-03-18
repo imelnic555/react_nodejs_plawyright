@@ -23,6 +23,10 @@ jobs:
           cd backend
           npm install
           npm install @nestjs/common @nestjs/core
+          npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
+          npm install --save-dev @types/node
+
+
 
 
       - name: Install frontend dependencies
@@ -32,6 +36,9 @@ jobs:
           npm install react-router-dom
           npm install --save-dev @types/react-router-dom
           npm install --save-dev vite-tsconfig-paths
+          npm install react-router-dom
+          npm install --save-dev @types/react @types/react-dom
+          
 
       - name: Install test dependencies
         run: |
