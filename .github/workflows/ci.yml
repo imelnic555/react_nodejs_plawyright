@@ -26,25 +26,21 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: backend
-        run: |
-          echo "Installing backend dependencies..."
-          npm install
+        run: npm install
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: |
-          echo "Installing frontend dependencies..."
-          npm install
-          npm install vite --save-dev  # ✅ Ensure Vite is installed locally
-          npx vite --version || echo "❌ Vite installation failed!"
+        run: npm install --force
 
       - name: Install test dependencies
         working-directory: tests
         run: |
           echo "Installing test dependencies..."
-          npm install --no-fund
-          npm install --save-dev tsx @cucumber/cucumber wait-on
-          npx wait-on --version || echo "❌ wait-on not installed!"
+          rm -rf node_modules package-lock.json  # Remove old dependencies
+          npm cache clean --force  # Ensure a clean install
+          npm install --legacy-peer-deps
+          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber wait-on playwright
+          npm list @cucumber/cucumber || { echo "❌ ERROR: @cucumber/cucumber is missing!"; exit 1; }
 
   build_backend:
     runs-on: ubuntu-latest
@@ -53,23 +49,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug - Print Current Directory
-        run: |
-          echo "Current directory:"
-          pwd
-          ls -lah
-
       - name: Build backend
         working-directory: backend
         run: |
-          echo "Building backend..."
           npm install
-          npm run build || { echo "❌ Backend build failed!"; exit 1; }
-          
-          echo "Verifying backend build output..."
+          npm run build
           ls -lah dist || { echo "❌ dist/ folder is missing after build!"; exit 1; }
-
-          echo "Checking for dist/main.js..."
           if [ ! -f dist/main.js ]; then
             echo "❌ ERROR: dist/main.js is missing after build!"
             exit 1
@@ -82,16 +67,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug - Print Current Directory
-        run: |
-          echo "Current directory:"
-          pwd
-          ls -lah
-
       - name: Build frontend
         working-directory: frontend
         run: |
-          echo "Building frontend..."
           npm install
           npm run build
           ls -lah dist || echo "❌ Build failed! dist/ folder is missing."
@@ -103,50 +81,56 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug - Print Current Directory
-        run: |
-          echo "Current directory:"
-          pwd
-          ls -lah
-
-      # ✅ Install Missing Backend Dependencies Before Start
       - name: Install Missing Backend Dependencies
         working-directory: backend
-        run: |
-          echo "Ensuring backend dependencies are installed..."
-          npm install
+        run: npm install
 
-      # ✅ Start Backend in Background
       - name: Start Backend
         working-directory: backend
         run: |
           echo "Starting backend..."
           npm run start > backend.log 2>&1 & echo $! > backend_pid
-          sleep 3
-          echo "Backend logs:"
+          sleep 5
           tail -n 20 backend.log || echo "No logs available."
 
-      # ✅ Start Frontend in Background (Ensure Vite is Installed)
+          echo "Verifying backend API..."
+          if ! curl -Is http://localhost:3000/users | head -n 1 | grep "HTTP/1.1 200"; then
+            echo "❌ ERROR: Backend API is not responding correctly!"
+            cat backend.log
+            exit 1
+          fi
+
       - name: Start Frontend
         working-directory: frontend
         run: |
           echo "Checking if Vite is installed..."
-          if ! npx vite --version; then
-            echo "❌ ERROR: Vite is missing! Reinstalling..."
-            npm install vite --save-dev
+          if ! test -d node_modules/vite; then
+            echo "❌ ERROR: Vite is missing in node_modules! Reinstalling..."
+            npm install vite --save-dev --force
           fi
 
           echo "Starting frontend..."
-          npx vite > frontend.log 2>&1 & echo $! > frontend_pid
-          sleep 3
-          echo "Frontend logs:"
+          npx vite --debug --host > frontend.log 2>&1 & echo $! > frontend_pid
+          sleep 5
+
+          if ! curl -Is http://localhost:5173 | head -n 1 | grep "HTTP/1.1 200"; then
+            echo "❌ ERROR: Frontend did not start successfully!"
+            cat frontend.log
+            exit 1
+          fi
+
           tail -n 20 frontend.log || echo "No logs available."
 
-      # ✅ Wait for Backend & Frontend to Start
       - name: Wait for Services
         run: |
           echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173 || { echo "❌ Backend or frontend did not start in time!"; exit 1; }
+          timeout 60 npx wait-on http://localhost:3000/users http://localhost:5173 || {
+            echo "❌ Backend or frontend did not start in time!"
+            curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
+            curl -I http://localhost:3000/users || echo "❌ Backend is NOT running!"
+            curl http://localhost:3000/users || echo "❌ Backend returned unexpected response!"
+            exit 1
+          }
 
   run_tests:
     runs-on: ubuntu-latest
@@ -156,13 +140,42 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        working-directory: tests
+        run: |
+          echo "Installing Playwright browsers..."
+          npx playwright install --with-deps
+
+      - name: Compile TypeScript for Tests
+        working-directory: tests
+        run: |
+          echo "Compiling TypeScript files..."
+          npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
+
+      - name: Debug Cucumber Tags
+        run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
+
+      - name: Fix Cucumber Execution Permissions
+        working-directory: tests
+        run: |
+          if [ -f node_modules/.bin/cucumber-js ]; then
+            chmod +x node_modules/.bin/cucumber-js
+          else
+            echo "❌ ERROR: cucumber-js binary not found! Trying reinstall..."
+            npm install @cucumber/cucumber --save-dev
+            if [ ! -f node_modules/.bin/cucumber-js ]; then
+              echo "❌ ERROR: cucumber-js still missing after reinstall!"
+              exit 1
+            fi
+          fi
 
       - name: Run Cucumber Tests
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          npx cucumber-js --import tsx
+          if ! npx cucumber-js --import tsx; then
+            echo "❌ ERROR: Cucumber tests failed!"
+            exit 1
+          fi
 
   stop_backend_and_frontend:
     runs-on: ubuntu-latest
