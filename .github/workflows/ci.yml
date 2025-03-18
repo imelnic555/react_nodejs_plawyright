@@ -22,14 +22,12 @@ jobs:
         run: |
           cd backend
           rm -rf node_modules package-lock.json
-          npm dedupe
-          npm install --legacy-peer-deps
-          npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
-          npm install --save-dev @types/node
+          npm ci
+          npm install @nestjs/common@latest @nestjs/core@latest @nestjs/typeorm@latest typeorm@latest
+          npm install --save-dev @types/node @types/class-validator
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/platform-fastify @fastify/cors class-validator class-transformer
-          npm install @nestjs/typeorm typeorm
           npm list @nestjs/common @nestjs/core @nestjs/typeorm || echo "❌ Some dependencies are missing!"
 
       - name: Install frontend dependencies
@@ -43,6 +41,7 @@ jobs:
           npm install --save-dev @types/node
           npm install --save-exact typescript@5.6.2
           npm install --save-dev @typescript-eslint/eslint-plugin@8.26.1 @typescript-eslint/parser@8.26.1
+          npm install --save-dev @vitejs/plugin-react
 
       - name: Ensure correct tsconfig.json settings
         run: |
