@@ -22,7 +22,7 @@ jobs:
         run: |
           cd backend
           rm -rf node_modules package-lock.json
-          npm ci
+          npm install --legacy-peer-deps
           npm install @nestjs/common@latest @nestjs/core@latest @nestjs/typeorm@latest typeorm@latest
           npm install --save-dev @types/node @types/class-validator
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
