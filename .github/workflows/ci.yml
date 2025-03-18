@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - feature/setup_projec
+      - feature/setup_project
 
 jobs:
   install_dependencies:
