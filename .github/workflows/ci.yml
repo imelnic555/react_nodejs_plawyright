@@ -25,7 +25,7 @@ jobs:
           rm -rf node_modules package-lock.json
           # Install base dependencies
           npm install
-          # Ensure react-router-dom and its types are installed
+          # Ensure react-router-dom and its types are installed1
           npm install react-router-dom
           npm install --save-dev @types/react-router-dom
           # Ensure React and ReactDOM are installed
