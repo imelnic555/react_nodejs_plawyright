@@ -36,10 +36,11 @@ jobs:
         working-directory: tests
         run: |
           echo "Installing test dependencies..."
+          rm -rf node_modules package-lock.json  # Remove old dependencies
+          npm cache clean --force  # Ensure a clean install
           npm install --legacy-peer-deps
           npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber wait-on playwright
-          npm list @cucumber/cucumber || echo "❌ @cucumber/cucumber is missing!"
-          npm list playwright || echo "❌ Playwright is missing!"
+          npm list @cucumber/cucumber || { echo "❌ ERROR: @cucumber/cucumber is missing!"; exit 1; }
 
   build_backend:
     runs-on: ubuntu-latest
@@ -173,16 +174,22 @@ jobs:
           if [ -f node_modules/.bin/cucumber-js ]; then
             chmod +x node_modules/.bin/cucumber-js
           else
-            echo "❌ ERROR: cucumber-js binary not found! Cucumber may not be installed."
-            npm list @cucumber/cucumber || echo "❌ @cucumber/cucumber is missing!"
-            exit 1
+            echo "❌ ERROR: cucumber-js binary not found! Trying reinstall..."
+            npm install @cucumber/cucumber --save-dev
+            if [ ! -f node_modules/.bin/cucumber-js ]; then
+              echo "❌ ERROR: cucumber-js still missing after reinstall!"
+              exit 1
+            fi
           fi
 
       - name: Run Cucumber Tests
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          npx cucumber-js --import tsx
+          if ! npx cucumber-js --import tsx; then
+            echo "❌ ERROR: Cucumber tests failed!"
+            exit 1
+          fi
 
   stop_backend_and_frontend:
     runs-on: ubuntu-latest
