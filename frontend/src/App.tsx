@@ -1,9 +1,9 @@
 // src/App.tsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
-import UserList from "./components/UserList";
-import Sidebar from "./components/Sidebar";
+import Login from "./components/Login.tsx";
+import UserList from "./components/UserList.tsx";
+import Sidebar from "./components/Sidebar.tsx";
 
 const App: React.FC = () => {
     return (
