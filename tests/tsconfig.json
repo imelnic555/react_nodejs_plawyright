@@ -13,6 +13,6 @@
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./tests"]
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "global.d.ts"],
   "exclude": ["node_modules"]
 }
