@@ -4,13 +4,12 @@
     "module": "Node16",
     "jsx": "react-jsx",
     "moduleResolution": "node16",
-    "strict": true
+    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
-    "allowImportingTsExtensions": true,  // ✅ Allow importing .tsx files explicitly
-    "noEmit": true,  // ✅ Required for TS5096
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*"],
