@@ -169,7 +169,14 @@ jobs:
 
       - name: Fix Cucumber Execution Permissions
         working-directory: tests
-        run: chmod +x node_modules/.bin/cucumber-js
+        run: |
+          if [ -f node_modules/.bin/cucumber-js ]; then
+            chmod +x node_modules/.bin/cucumber-js
+          else
+            echo "❌ ERROR: cucumber-js binary not found! Cucumber may not be installed."
+            npm list @cucumber/cucumber || echo "❌ @cucumber/cucumber is missing!"
+            exit 1
+          fi
 
       - name: Run Cucumber Tests
         working-directory: tests
