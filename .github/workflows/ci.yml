@@ -1,0 +1,150 @@
+
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - fetaure/setup_project
+
+jobs:
+  install_dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          # Remove old lockfiles and modules
+          rm -rf node_modules package-lock.json
+          # Install base dependencies
+          npm install
+          # Ensure react-router-dom and its types are installed
+          npm install react-router-dom
+          npm install --save-dev @types/react-router-dom
+          # Ensure React and ReactDOM are installed
+          npm install react react-dom
+          # Ensure TypeScript and necessary types are installed
+          npm install --save-dev typescript @types/react @types/react-dom
+          # Verify tsconfig.json settings
+          if [ ! -f tsconfig.json ]; then
+            echo '{
+              "compilerOptions": {
+                "jsx": "react-jsx",
+                "moduleResolution": "node",
+                "strict": true
+              }
+            }' > tsconfig.json
+          else
+            if ! grep -q '"jsx": "react-jsx"' tsconfig.json; then
+              echo 'Please ensure your tsconfig.json has "jsx": "react-jsx" under compilerOptions.'
+            fi
+          fi
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          rm -rf node_modules package-lock.json dist
+          npm install
+
+  build_frontend:
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+          cache: 'npm'
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+  build_backend:
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+          cache: 'npm'
+
+      - name: Build backend
+        run: |
+          cd backend
+          npm run build
+
+  run_cucumber_tests:
+    runs-on: ubuntu-latest
+    needs: [build_backend, build_frontend]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+          cache: 'npm'
+
+      - name: Install test dependencies
+        run: |
+          cd tests
+          rm -rf node_modules package-lock.json
+          npm install
+          # Install Playwright and its dependencies1
+          npm install --save-dev @playwright/test
+          npx playwright install --with-deps
+          # Install Cucumber.js
+          npm install --save-dev @cucumber/cucumber
+          # Install wait-on utility
+          npm install --save-dev wait-on
+
+      - name: Start backend
+        run: |
+          cd backend
+          npm run start &
+          echo $! > backend_pid
+        env:
+          NODE_ENV: production
+
+      - name: Start frontend
+        run: |
+          cd frontend
+          npm run dev &
+          echo $! > frontend_pid
+        env:
+          NODE_ENV: production
+
+      - name: Wait for services to be ready
+        run: |
+          wait-on http://localhost:3000 http://localhost:5173
+
+      - name: Run Cucumber tests
+        run: |
+          cd tests
+          npx cucumber-js --require-module ts-node/register --require **/*.ts
+
+      - name: Stop backend
+        run: |
+          kill $(cat backend_pid) || echo "Backend process not running."
+
+      - name: Stop frontend
+        run: |
+          kill $(cat frontend_pid) || echo "Frontend process not running."
