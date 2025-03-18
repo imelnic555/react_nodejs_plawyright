@@ -38,6 +38,9 @@ jobs:
         working-directory: frontend
         run: |
           echo "Installing frontend dependencies..."
+          rm -rf node_modules
+          rm -f package-lock.json
+          npm cache clean --force
           npm install
           npm install --save-dev vite-tsconfig-paths
 
@@ -76,7 +79,7 @@ jobs:
     needs: install_dependencies
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build frontend
         working-directory: frontend
