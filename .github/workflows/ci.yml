@@ -129,7 +129,7 @@ jobs:
           echo "Starting frontend..."
           npm run dev > frontend.log 2>&1 & echo $! > frontend_pid
 
-      - name: Debugging: Check if backend & frontend are running
+      - name: Debugging Check if backend & frontend are running
         run: |
           sleep 5
           echo "Checking if backend is running..."
