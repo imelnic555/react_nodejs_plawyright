@@ -25,8 +25,9 @@ jobs:
           npm install @nestjs/common @nestjs/core
           npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
           npm install --save-dev @types/node
-          npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
-          npm install --save-dev @types/node
+          npm install @nestjs/jwt passport @nestjs/passport passport-jwt
+          npm install --save-dev @types/passport-jwt
+
 
 
 
