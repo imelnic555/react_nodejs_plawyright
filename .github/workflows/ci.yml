@@ -23,6 +23,9 @@ jobs:
         working-directory: backend
         run: |
           echo "Installing backend dependencies..."
+          rm -rf node_modules
+          rm -f package-lock.json
+          npm cache clean --force
           npm install
           npm i --save @nestjs/config
           npm install @nestjs/common
