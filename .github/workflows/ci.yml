@@ -9,52 +9,76 @@ jobs:
   install_dependencies:
     runs-on: ubuntu-latest
     steps:
+      # 1. Check out your repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Set up Node.js (v23 as per your config)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 23
           cache: 'npm'
 
+      # 3. Install Frontend Dependencies
       - name: Install frontend dependencies
         run: |
           cd frontend
+          # Clean up old installs
           rm -rf node_modules package-lock.json
+
+          # Basic npm install
           npm install
+
+          # Ensure React (>=17), React Router
           npm install react@latest react-dom@latest react-router-dom@latest
+
+          # Type definitions
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
+
+          # TypeScript & ESLint Tools
           npm install --save-exact typescript@4.9.5
           npm install --save-dev @typescript-eslint/eslint-plugin@8.26.1 @typescript-eslint/parser@8.26.1
           npm install --save-dev @vitejs/plugin-react
+
+          # Deduplicate
           npm dedupe
 
+      # 4. Ensure correct tsconfig.json settings
       - name: Ensure correct tsconfig.json settings
         run: |
           cd frontend
           echo '{
             "compilerOptions": {
               "jsx": "react-jsx",
+              "module": "ESNext",
               "moduleResolution": "node",
               "strict": true
             }
           }' > tsconfig.json
 
+      # 5. Install Backend Dependencies
       - name: Install backend dependencies
         run: |
           cd backend
           rm -rf node_modules package-lock.json dist
           npm install
+
+          # NestJS + TypeORM + Express or Fastify
           npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
           npm install @nestjs/platform-express @nestjs/platform-fastify
+
+          # Additional dev & auth libs
           npm install --save-dev @types/node
           npm install @nestjs/jwt passport @nestjs/passport passport-jwt
           npm install --save-dev @types/passport-jwt
           npm install @nestjs/config @nestjs/swagger class-validator class-transformer
+
+          # Optional build
           npm run build || echo "(If needed, build command here)"
 
+      # 6. Install Test Dependencies
       - name: Install test dependencies
         run: |
           cd tests
@@ -62,6 +86,7 @@ jobs:
           npm install
           npm install --save-dev tsx @cucumber/cucumber wait-on
 
+  # Build the Frontend
   build_frontend:
     runs-on: ubuntu-latest
     needs: install_dependencies
@@ -80,6 +105,7 @@ jobs:
           cd frontend
           npm run build
 
+  # Build the Backend
   build_backend:
     runs-on: ubuntu-latest
     needs: build_frontend
@@ -98,6 +124,7 @@ jobs:
           cd backend
           npm run build
 
+  # Run Cucumber Tests
   run_cucumber_tests:
     runs-on: ubuntu-latest
     needs: [build_backend, build_frontend]
@@ -116,32 +143,39 @@ jobs:
           echo "Running Cucumber tests..."
           node -v
 
+          # 1. Basic test deps check
           cd tests
           npm install
           ls -l node_modules/ || echo "❌ node_modules missing!"
           ls -l support/ || echo "❌ world.ts missing!"
 
+          # 2. Start Backend
           cd ../backend
           echo "Starting backend..."
-          npm run start > backend.log 2>&1 & echo $! > backend_pid
+          npm run start > ../backend.log 2>&1 & echo $! > ../backend_pid
           sleep 5
-          cat backend.log
+          cat ../backend.log
 
+          # 3. Start Frontend
           cd ../frontend
           echo "Starting frontend..."
-          npm run dev > frontend.log 2>&1 & echo $! > frontend_pid
+          npm run dev > ../frontend.log 2>&1 & echo $! > ../frontend_pid
           cd ../tests
 
+          # 4. Check If They Are Running
           sleep 5
           curl -I http://localhost:3000 || echo "❌ Backend is NOT running!"
           curl -I http://localhost:5173 || echo "❌ Frontend is NOT running!"
 
+          # 5. Wait up to 60s on both ports
           timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
 
+          # 6. Install Playwright & Run Cucumber
           npx playwright install --with-deps
           npx cucumber-js --import tsx
 
+          # 7. Stop Backend + Frontend
           echo "Stopping backend..."
-          kill $(cat ../backend/backend_pid) || echo "❌ Failed to stop backend!"
+          kill $(cat ../backend_pid) || echo "❌ Failed to stop backend!"
           echo "Stopping frontend..."
-          kill $(cat ../frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
+          kill $(cat ../frontend_pid) || echo "❌ Failed to stop frontend!"
