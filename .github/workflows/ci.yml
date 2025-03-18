@@ -55,6 +55,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify Working Directory (Backend)
+        working-directory: backend
+        run: |
+          echo "Current working directory:"
+          pwd  # ✅ Print current folder
+          echo "Listing backend folder contents:"
+          ls -lah  # ✅ Check files before building
+
       - name: Build backend
         working-directory: backend
         run: |
@@ -80,6 +88,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify Working Directory (Frontend)
+        working-directory: frontend
+        run: |
+          echo "Current working directory:"
+          pwd  # ✅ Print current folder
+          echo "Listing frontend folder contents:"
+          ls -lah  # ✅ Check files before building
+
       - name: Build frontend
         working-directory: frontend
         run: |
@@ -101,9 +117,20 @@ jobs:
       - name: Start Backend
         working-directory: backend
         run: |
+          echo "Current working directory before starting backend:"
+          pwd  # ✅ Print current folder
+          echo "Listing backend folder contents:"
+          ls -lah  # ✅ Show files in the directory
+
+          echo "Checking if backend was built..."
+          if [ ! -d dist ]; then
+            echo "❌ ERROR: Backend build is missing! Cannot start backend."
+            exit 1
+          fi
+
           echo "Checking for dist/main.js before starting..."
           if [ ! -f dist/main.js ]; then
-            echo "❌ ERROR: Backend build is missing! Cannot start backend."
+            echo "❌ ERROR: dist/main.js is missing! Backend cannot start."
             ls -lah dist  # Show contents for debugging
             exit 1
           fi
