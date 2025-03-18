@@ -38,6 +38,18 @@ jobs:
           npm install react react-dom react-router-dom
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/node
+          npm install --save-dev @types/react-router-dom
+
+      - name: Ensure correct tsconfig.json settings
+        run: |
+          cd frontend
+          echo '{
+            "compilerOptions": {
+              "jsx": "react-jsx",
+              "moduleResolution": "node",
+              "strict": true
+            }
+          }' > tsconfig.json
 
       - name: Install test dependencies
         run: |
