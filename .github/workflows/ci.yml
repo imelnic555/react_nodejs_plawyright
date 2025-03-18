@@ -23,7 +23,7 @@ jobs:
           git config --global --unset url."git@github.com:".insteadOf || true
           git config --global --replace-all url."https://github.com/".insteadOf "git@github.com:"
           git config --global --unset core.sshCommand || true
-          git config --global core.sshCommand "git --config core.sshCommand=''"
+          git config --global core.sshCommand ""
           git config --global --list
 
       - name: Prevent NPM from Using SSH for GitHub Dependencies
