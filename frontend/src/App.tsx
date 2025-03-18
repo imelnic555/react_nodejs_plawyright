@@ -1,14 +1,28 @@
+// src/App.tsx
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login.js";
-import UserList from "./components/UserList.js";  // Ensure correct case
+import Login from "./components/Login";
+import UserList from "./components/UserList";
+import Sidebar from "./components/Sidebar";
 
-export default function App() {
+const App: React.FC = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/users" element={<UserList />} />
+                <Route path="/" element={<h2>Home Page</h2>} />
+                <Route path="/login" element={<Login />} />
+                <Route
+                    path="/users"
+                    element={
+                        <div style={{ display: "flex" }}>
+                            <Sidebar />
+                            <UserList />
+                        </div>
+                    }
+                />
             </Routes>
         </Router>
     );
-}
+};
+
+export default App;

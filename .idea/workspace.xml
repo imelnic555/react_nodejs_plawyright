@@ -4,17 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab0b6b54-67f1-47b0-b083-fbb186c64e2c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Sidebar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/context/AuthContext.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="ab0b6b54-67f1-47b0-b083-fbb186c64e2c" name="Changes" comment="fixed frontesnd1">
+      <change afterPath="$PROJECT_DIR$/backend/src/auth/constants.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/auth/jwt.strategy.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/services/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/auth/auth.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/auth/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/users/users.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/users/users.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/users/users.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/users/users.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/users/users.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/users/users.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,10 +83,34 @@
       <workItem from="1742224825133" duration="84000" />
       <workItem from="1742225013152" duration="791000" />
       <workItem from="1742275635921" duration="8675000" />
+      <workItem from="1742307306267" duration="3786000" />
     </task>
+    <task id="LOCAL-00001" summary="fixed frontesnd">
+      <option name="closed" value="true" />
+      <created>1742294194561</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1742294194561</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742294363254</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1742294363254</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fixed backend" />
+    <MESSAGE value="fixed frontesnd" />
+    <MESSAGE value="fixed frontesnd1" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed frontesnd1" />
   </component>
 </project>

@@ -1,24 +1,24 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-    async login(loginDto: LoginDto): Promise<{ token?: string }> {
+    constructor(private jwtService: JwtService) {}
+
+    async login(loginDto: LoginDto): Promise<{ token: string }> {
         const { email, password } = loginDto;
 
-        // ✅ Check if the function is executed
-        console.log("🔍 Login Attempt Received", loginDto);
+        console.log("🛠 Login Attempt:", email, password);
 
-        // ✅ Check if email & password are correctly received
-        console.log("📩 Email:", email, "🛠 Password:", password);
-
-        // Fake user check (Replace with database lookup)
+        // ✅ Replace this with real database validation
         if (email === '1@1.com' && password === '1') {
-            console.log("✅ Login successful for:", email);
-            return { token: 'dummy-jwt-token' };
+            const payload = { email };
+            const token = this.jwtService.sign(payload); // ✅ Generate JWT token
+            console.log("🔑 Generated Token:", token);
+            return { token }; // ✅ Send valid token to frontend
         }
 
-        console.log("❌ Invalid login attempt for:", email);
-        throw new UnauthorizedException('Invwwalid credentials2');
+        throw new UnauthorizedException('Invalid credentials');
     }
 }

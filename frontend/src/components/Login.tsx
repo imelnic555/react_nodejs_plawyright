@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const Login: React.FC = () => {
+export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); // Prevent page reload
+        e.preventDefault();
 
         try {
+            console.log("requested");
             const response = await fetch("http://localhost:3000/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -18,11 +17,13 @@ const Login: React.FC = () => {
             });
 
             const data = await response.json();
-            if (response.ok) {
-                localStorage.setItem("authToken", data.token); // Store token
-                navigate("/UserList"); // Redirect using React Router
+
+            if (response.ok && data.token) {
+                console.log("✅ Login successful! Storing token:", data.token);
+                localStorage.setItem("authToken", data.token); // ✅ Store token
+                window.location.href = "/users"; // ✅ Redirect after login
             } else {
-                setError(data.message || "Invalid credentials1");
+                setError(data.message || "Invalid credentials");
             }
         } catch (err) {
             setError("Something went wrong. Check backend logs.");
@@ -30,32 +31,32 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={{ padding: "10px", marginBottom: "10px" }}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{ padding: "10px", marginBottom: "10px" }}
-                />
-                <button type="submit" style={{ padding: "10px", background: "blue", color: "white" }}>
-                    Login
-                </button>
-            </form>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            <div style={{ width: "300px", padding: "20px", border: "1px solid #ddd", borderRadius: "5px" }}>
+                <h2>Login</h2>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
+                    />
+                    <button type="submit" style={{ width: "100%", padding: "10px", background: "blue", color: "white" }}>
+                        Login
+                    </button>
+                </form>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+            </div>
         </div>
     );
-};
-
-export default Login;
+}
