@@ -111,18 +111,16 @@ jobs:
         working-directory: backend
         run: |
           echo "Checking if backend build exists before deployment..."
-          cd backend  # ✅ Ensure we're in the backend directory
           if [ ! -f dist/main.js ]; then
             echo "❌ ERROR: Backend build is missing! Aborting deployment."
             ls -lah dist  # ✅ Show all files in dist/ for debugging
             exit 1
           fi
-          echo "Backend build found. Proceeding with deployment."
+          echo "✅ Backend build found. Proceeding with deployment."
 
       - name: Deploy Backend
         working-directory: backend
         run: |
-          cd backend  # ✅ Enter backend directory before running commands
           echo "Deploying backend..."
           scp -r dist/ user@your-server:/var/www/backend
           ssh user@your-server "pm2 restart backend || pm2 start dist/main.js --name backend"
@@ -130,7 +128,6 @@ jobs:
       - name: Deploy Frontend
         working-directory: frontend
         run: |
-          cd frontend  # ✅ Enter frontend directory before running commands
           echo "Deploying frontend..."
           scp -r build/ user@your-server:/var/www/frontend
           ssh user@your-server "pm2 restart frontend || pm2 start serve --name frontend -- -s build -l 5173"
