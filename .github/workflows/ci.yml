@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - fetaure/setup_project  # Using your branch name1
+      - fetaure/setup_project  # Using your branch name11
 
 jobs:
   install_dependencies:
