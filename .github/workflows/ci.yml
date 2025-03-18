@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 23
+          node-version: 18  # Ensure compatibility with React 18
           cache: 'npm'
 
       - name: Install frontend dependencies
@@ -23,8 +23,8 @@ jobs:
           cd frontend
           # Remove old lockfiles and modules
           rm -rf node_modules package-lock.json
-          # Install React 17 and corresponding packages
-          npm install react@17 react-dom@17
+          # Install React 18 and corresponding packages
+          npm install react@18 react-dom@18
           # Install react-router-dom and its type definitions
           npm install react-router-dom
           npm install --save-dev @types/react-router-dom
@@ -63,7 +63,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 23
+          node-version: 18  # Ensure compatibility with React 18
           cache: 'npm'
 
       - name: Build frontend
@@ -81,7 +81,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 23
+          node-version: 18  # Ensure compatibility with React 18
           cache: 'npm'
 
       - name: Build backend
@@ -89,7 +89,7 @@ jobs:
           cd backend
           npm run build
 
-  run_cucumber_tests:
+  run_tests:
     runs-on: ubuntu-latest
     needs: [build_backend, build_frontend]
     steps:
@@ -99,7 +99,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 23
+          node-version: 18  # Ensure compatibility with React 18
           cache: 'npm'
 
       - name: Install test dependencies
@@ -135,7 +135,7 @@ jobs:
         run: |
           npx wait-on http://localhost:3000 http://localhost:5173
 
-      - name: Run Cucumber tests
+      - name: Run tests
         run: |
           cd tests
           npx cucumber-js --require-module ts-node/register --require **/*.ts
