@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - feature/setup_project  # Fixed the branch name typo
+      - fetaure/setup_project  # Keeping your original branch name
 
 jobs:
   install_dependencies:
@@ -15,34 +15,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20  # Node.js 23 is not stable, using latest LTS
+          node-version: 23
           cache: npm
 
       - name: Install backend dependencies
         working-directory: backend
         run: |
           echo "Installing backend dependencies..."
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
           npm install
-          npm install @nestjs/config @nestjs/common @nestjs/core @nestjs/mapped-types
 
       - name: Install frontend dependencies
         working-directory: frontend
         run: |
           echo "Installing frontend dependencies..."
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
           npm install
-          npm install --save-dev vite-tsconfig-paths
 
       - name: Install test dependencies
         working-directory: tests
         run: |
           echo "Installing test dependencies..."
           npm install --no-fund
-          npm install --save-dev tsx @cucumber/cucumber wait-on
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
 
   build_backend:
     runs-on: ubuntu-latest
@@ -55,7 +47,6 @@ jobs:
         working-directory: backend
         run: |
           echo "Building backend..."
-          npm install
           npm run build
 
       - name: Cache backend build
@@ -77,7 +68,6 @@ jobs:
         working-directory: frontend
         run: |
           echo "Building frontend..."
-          npm install
           npm run build
 
       - name: Cache frontend build
@@ -98,7 +88,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 23
           cache: npm
 
       - name: Install test dependencies
@@ -106,13 +96,12 @@ jobs:
         run: |
           echo "Installing test dependencies..."
           npm install --no-fund
-          npm list tsx @cucumber/cucumber || echo "❌ Dependencies missing!"
 
       - name: Start backend
         working-directory: backend
         run: |
           echo "Starting backend..."
-          nohup npm run start:prod > backend.log 2>&1 & echo $! > backend_pid
+          npm run start > backend.log 2>&1 & echo $! > backend_pid
           sleep 5
           echo "Backend logs:"
           tail -n 20 backend.log
@@ -121,7 +110,7 @@ jobs:
         working-directory: frontend
         run: |
           echo "Starting frontend..."
-          nohup npm run preview > frontend.log 2>&1 & echo $! > frontend_pid
+          npm run dev > frontend.log 2>&1 & echo $! > frontend_pid
           sleep 5
           echo "Frontend logs:"
           tail -n 20 frontend.log
@@ -129,7 +118,7 @@ jobs:
       - name: Wait for services
         run: |
           echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173 || { echo "❌ Services not ready!"; exit 1; }
+          timeout 60 npx wait-on http://localhost:3000 http://localhost:5173
 
       - name: Install Playwright browsers
         run: |
@@ -140,25 +129,43 @@ jobs:
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          npx cucumber-js --import tsx || { echo "❌ Cucumber tests failed!"; exit 1; }
+          npx cucumber-js --import tsx
 
       - name: Stop backend
         if: always()
         run: |
           echo "Stopping backend..."
-          kill $(cat backend/backend_pid) || echo "❌ Failed to stop backend!"
+          kill $(cat backend_pid) || echo "❌ Failed to stop backend!"
 
       - name: Stop frontend
         if: always()
         run: |
           echo "Stopping frontend..."
-          kill $(cat frontend/frontend_pid) || echo "❌ Failed to stop frontend!"
+          kill $(cat frontend_pid) || echo "❌ Failed to stop frontend!"
 
-      - name: Print logs for debugging
-        if: always()
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [run_cucumber_tests]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Backend
+        working-directory: backend
         run: |
-          echo "📄 Backend logs:"
-          tail -n 50 backend/backend.log || echo "❌ No backend logs found!"
-          
-          echo "📄 Frontend logs:"
-          tail -n 50 frontend/frontend.log || echo "❌ No frontend logs found!"
+          echo "Deploying backend..."
+          scp -r dist/ user@your-server:/var/www/backend
+          ssh user@your-server "pm2 restart backend"
+
+      - name: Deploy Frontend
+        working-directory: frontend
+        run: |
+          echo "Deploying frontend..."
+          scp -r build/ user@your-server:/var/www/frontend
+          ssh user@your-server "pm2 restart frontend"
+
+      - name: Shut Down Services After Deployment
+        run: |
+          echo "Shutting down backend and frontend after deployment..."
+          ssh user@your-server "pm2 stop backend || echo 'Backend not running!'"
+          ssh user@your-server "pm2 stop frontend || echo 'Frontend not running!'"
