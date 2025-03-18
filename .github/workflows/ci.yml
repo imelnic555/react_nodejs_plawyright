@@ -20,7 +20,9 @@ jobs:
 
       - name: Force GitHub to Use HTTPS for All Requests
         run: |
-          git config --global --unset url."git@github.com:".insteadOf
+          if git config --global --get url."git@github.com:".insteadOf; then
+            git config --global --unset url."git@github.com:".insteadOf
+          fi
           git config --global --add url."https://github.com/".insteadOf "git@github.com:"
           git config --global --list
 
