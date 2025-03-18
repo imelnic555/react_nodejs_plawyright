@@ -23,8 +23,12 @@ jobs:
         working-directory: backend
         run: |
           echo "Installing backend dependencies..."
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm install @nestjs/mapped-types
           npm install
-
+          npm i --save @nestjs/config
+          
       - name: Install frontend dependencies
         working-directory: frontend
         run: |
