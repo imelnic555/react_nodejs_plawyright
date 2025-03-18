@@ -18,19 +18,20 @@ jobs:
           node-version: 23
           cache: 'npm'
 
-      - name: Force GitHub to Use HTTPS for All Requests
+      - name: Remove Any NPM SSH Configuration
         run: |
-          if git config --global --get url."git@github.com:".insteadOf; then
-            git config --global --unset url."git@github.com:".insteadOf
-          fi
-          git config --global --add url."https://github.com/".insteadOf "git@github.com:"
-          git config --global --list
-
-      - name: Prevent NPM from Using SSH for GitHub Dependencies
-        run: |
+          npm config delete proxy || true
+          npm config delete https-proxy || true
+          npm config delete ssh || true
           npm config set strict-ssl false
           npm config set registry https://registry.npmjs.org/
           npm cache clean --force
+
+      - name: Force Git to Clone Using HTTPS
+        run: |
+          git config --global --unset url."git@github.com:".insteadOf || true
+          git config --global --replace-all url."https://github.com/".insteadOf "git@github.com:"
+          git config --global --list
 
       - name: Install backend dependencies
         run: |
