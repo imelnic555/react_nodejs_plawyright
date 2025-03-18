@@ -36,8 +36,8 @@ jobs:
         working-directory: tests
         run: |
           echo "Installing test dependencies..."
-          npm install --no-fund
-          npm install --save-dev tsx @cucumber/cucumber wait-on playwright
+          npm install --legacy-peer-deps
+          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber wait-on playwright
           npm list @cucumber/cucumber || echo "❌ @cucumber/cucumber is missing!"
           npm list playwright || echo "❌ Playwright is missing!"
 
@@ -163,6 +163,13 @@ jobs:
         run: |
           echo "Installing Playwright browsers..."
           npx playwright install --with-deps
+
+      - name: Debug Cucumber Tags
+        run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
+
+      - name: Fix Cucumber Execution Permissions
+        working-directory: tests
+        run: chmod +x node_modules/.bin/cucumber-js
 
       - name: Run Cucumber Tests
         working-directory: tests
