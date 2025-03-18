@@ -25,6 +25,8 @@ jobs:
           npm install @nestjs/common @nestjs/core
           npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
           npm install --save-dev @types/node
+          npm install @nestjs/common @nestjs/core @nestjs/typeorm typeorm
+          npm install --save-dev @types/node
 
 
 
@@ -38,6 +40,9 @@ jobs:
           npm install --save-dev vite-tsconfig-paths
           npm install react-router-dom
           npm install --save-dev @types/react @types/react-dom
+          npm install react@latest react-dom@latest
+          
+
           
 
       - name: Install test dependencies
