@@ -12,6 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug: Print Current Directory
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -lah
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -22,23 +28,13 @@ jobs:
         working-directory: backend
         run: |
           echo "Installing backend dependencies..."
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
           npm install
-          npm install @nestjs/common
-          npm install @nestjs/core
-          npm install @nestjs/mapped-types
 
       - name: Install frontend dependencies
         working-directory: frontend
         run: |
           echo "Installing frontend dependencies..."
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
           npm install
-          npm install @nestjs/common
-          npm install @nestjs/core
-          npm install --save-dev vite-tsconfig-paths
 
       - name: Install test dependencies
         working-directory: tests
@@ -55,12 +51,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug: Print Current Directory
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -lah
+
       - name: Build backend
         working-directory: backend
         run: |
           echo "Building backend..."
-          npm install @nestjs/common
-          npm install @nestjs/core
           npm install
           npm run build || { echo "❌ Backend build failed!"; exit 1; }
           
@@ -80,12 +80,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug: Print Current Directory
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -lah
+
       - name: Build frontend
         working-directory: frontend
         run: |
           echo "Building frontend..."
-          npm install @nestjs/common
-          npm install @nestjs/core
           npm install
           npm run build
           ls -lah dist || echo "❌ Build failed! dist/ folder is missing."
@@ -97,6 +101,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug: Print Current Directory
+        run: |
+          echo "Current directory:"
+          pwd
+          ls -lah
+
+      # ✅ Install Missing Backend Dependencies Before Start
+      - name: Install Missing Backend Dependencies
+        working-directory: backend
+        run: |
+          echo "Ensuring backend dependencies are installed..."
+          npm install
+
       # ✅ Start Backend in Parallel
       - name: Start Backend
         working-directory: backend
@@ -106,7 +123,7 @@ jobs:
           sleep 3
           echo "Backend logs:"
           tail -n 20 backend.log || echo "No logs available."
-
+        &  # ✅ Runs backend in the background
 
       # ✅ Start Frontend in Parallel
       - name: Start Frontend
@@ -117,6 +134,7 @@ jobs:
           sleep 3
           echo "Frontend logs:"
           tail -n 20 frontend.log || echo "No logs available."
+        &  # ✅ Runs frontend in the background
 
       # ✅ Wait for Backend & Frontend to Start
       - name: Wait for Services
