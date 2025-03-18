@@ -1,16 +1,24 @@
-// backend/src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-// @ts-ignore
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-    async login(loginDto: LoginDto): Promise<any> {
+    async login(loginDto: LoginDto): Promise<{ token?: string }> {
         const { email, password } = loginDto;
-        // For demonstration, accept only specific credentials:
-        if (email === 'test@example.com' && password === 'password123') {
+
+        // ✅ Check if the function is executed
+        console.log("🔍 Login Attempt Received", loginDto);
+
+        // ✅ Check if email & password are correctly received
+        console.log("📩 Email:", email, "🛠 Password:", password);
+
+        // Fake user check (Replace with database lookup)
+        if (email === '1@1.com' && password === '1') {
+            console.log("✅ Login successful for:", email);
             return { token: 'dummy-jwt-token' };
         }
-        throw new UnauthorizedException('Invalid credentials');
+
+        console.log("❌ Invalid login attempt for:", email);
+        throw new UnauthorizedException('Invwwalid credentials2');
     }
 }
