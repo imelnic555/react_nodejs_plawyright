@@ -20,15 +20,33 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: backend
-        run: npm install
+        run: |
+          echo "Installing backend dependencies..."
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          npm install
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm install @nestjs/mapped-types
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm install
+        run: |
+          echo "Installing frontend dependencies..."
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          npm install
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm install --save-dev vite-tsconfig-paths
 
       - name: Install test dependencies
         working-directory: tests
-        run: npm install
+        run: |
+          echo "Installing test dependencies..."
+          npm install --no-fund
+          npm install --save-dev tsx @cucumber/cucumber wait-on
+          npx wait-on --version || echo "❌ wait-on not installed!"
 
   build_backend:
     runs-on: ubuntu-latest
@@ -39,7 +57,14 @@ jobs:
 
       - name: Build backend
         working-directory: backend
-        run: npm run build
+        run: |
+          echo "Building backend..."
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm install
+          npm run build
+          mkdir -p dist
+          ls -lah dist || echo "❌ Build failed! dist/ folder is missing."
 
   build_frontend:
     runs-on: ubuntu-latest
@@ -50,7 +75,13 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
-        run: npm run build
+        run: |
+          echo "Building frontend..."
+          npm install @nestjs/common
+          npm install @nestjs/core
+          npm install
+          npm run build
+          ls -lah build || echo "❌ Build failed! build/ folder is missing."
 
   deploy_and_run_tests:
     runs-on: ubuntu-latest
