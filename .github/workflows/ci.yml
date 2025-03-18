@@ -62,15 +62,14 @@ jobs:
           npm install @nestjs/common
           npm install @nestjs/core
           npm run build
-          ls -l dist || echo "❌ Build failed! dist/ folder is missing!"
+          mkdir -p dist  # ✅ Ensure dist/ folder exists
+          ls -lah dist || echo "❌ Build failed! dist/ folder is missing!"
 
-      - name: Cache backend build
-        uses: actions/cache@v4
+      - name: Upload Backend Build Artifact
+        uses: actions/upload-artifact@v4
         with:
+          name: backend-build
           path: backend/dist/
-          key: ${{ runner.os }}-backend-dist-${{ hashFiles('backend/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-backend-dist-
 
   build_frontend:
     runs-on: ubuntu-latest
@@ -87,7 +86,7 @@ jobs:
           npm install @nestjs/core
           npm run build
 
-      - name: Cache frontend build
+      - name: Cache Frontend Build
         uses: actions/cache@v4
         with:
           path: frontend/build/
@@ -102,14 +101,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy Backend
+      - name: Download Backend Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: backend/dist/
+
+      - name: Verify Backend Build Exists
         working-directory: backend
         run: |
           echo "Checking if backend build exists before deployment..."
+          cd backend  # ✅ Ensure we're in the backend directory
           if [ ! -f dist/main.js ]; then
             echo "❌ ERROR: Backend build is missing! Aborting deployment."
+            ls -lah dist  # ✅ Show all files in dist/ for debugging
             exit 1
           fi
+          echo "Backend build found. Proceeding with deployment."
+
+      - name: Deploy Backend
+        working-directory: backend
+        run: |
+          cd backend  # ✅ Enter backend directory before running commands
           echo "Deploying backend..."
           scp -r dist/ user@your-server:/var/www/backend
           ssh user@your-server "pm2 restart backend || pm2 start dist/main.js --name backend"
@@ -117,6 +130,7 @@ jobs:
       - name: Deploy Frontend
         working-directory: frontend
         run: |
+          cd frontend  # ✅ Enter frontend directory before running commands
           echo "Deploying frontend..."
           scp -r build/ user@your-server:/var/www/frontend
           ssh user@your-server "pm2 restart frontend || pm2 start serve --name frontend -- -s build -l 5173"
@@ -145,12 +159,12 @@ jobs:
           ls -l node_modules/ || echo "❌ node_modules missing!"
           ls -l support/ || echo "❌ world.ts missing!"
 
-      - name: Check backend status
+      - name: Check Backend Status
         run: |
           echo "Checking if backend is running..."
           curl -I http://your-server:3000 || echo "❌ Backend is NOT running!"
 
-      - name: Check frontend status
+      - name: Check Frontend Status
         run: |
           echo "Checking if frontend is running..."
           curl -I http://your-server:5173 || echo "❌ Frontend is NOT running!"
