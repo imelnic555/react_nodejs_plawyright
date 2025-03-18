@@ -36,6 +36,7 @@ jobs:
           npm install --save-dev @types/react @types/react-dom @types/react-router-dom vite-tsconfig-paths
           npm install --save-dev @types/react-router-dom
           npm install --save-dev @types/node
+          npm install --save-dev react/jsx-runtime
 
       - name: Install test dependencies
         run: |
