@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "Node16",
-    "moduleResolution": "Node16",
-    "strict": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "strict": true
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
