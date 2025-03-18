@@ -7,9 +7,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",
-    "experimentalDecorators": true,  // Enable decorators
-    "emitDecoratorMetadata": true,   // Enable decorator metadata
+    "outDir": "./dist",            // ✅ Ensures compiled files go to `dist/`
+    "rootDir": "./src",             // ✅ Ensures TypeScript compiles only from `src/`
+    "experimentalDecorators": true,  // ✅ Enable decorators
+    "emitDecoratorMetadata": true,   // ✅ Enable decorator metadata
     "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*"],
