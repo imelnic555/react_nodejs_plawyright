@@ -18,13 +18,12 @@ jobs:
           node-version: 23
           cache: 'npm'
 
-      - name: Completely Disable SSH for Git and NPM
+      - name: Ensure Git and NPM Use HTTPS
         run: |
           git config --global --unset url."git@github.com:".insteadOf || true
           git config --global --replace-all url."https://github.com/".insteadOf "git@github.com:"
           git config --global --unset core.sshCommand || true
           git config --global core.sshCommand " "
-          git config --global --list
           npm config delete proxy || true
           npm config delete https-proxy || true
           npm config delete ssh || true
@@ -32,7 +31,7 @@ jobs:
           npm config set registry https://registry.npmjs.org/
           npm cache clean --force
 
-      - name: Authenticate GitHub for Private Repos
+      - name: Authenticate GitHub for Private Dependencies
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
