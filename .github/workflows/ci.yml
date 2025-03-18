@@ -34,9 +34,9 @@ jobs:
         working-directory: frontend
         run: |
           echo "Installing frontend dependencies..."
-          npm install
-          npm install vite --save-dev  # ✅ Ensure Vite is installed locally
-          npx vite --version || echo "❌ Vite installation failed!"
+          npm install --force
+          npm list vite || echo "❌ Vite is missing in node_modules!"
+          npx vite --version || echo "❌ Vite command not found!"
 
       - name: Install test dependencies
         working-directory: tests
@@ -121,7 +121,7 @@ jobs:
         working-directory: backend
         run: |
           echo "Starting backend..."
-          npm run start > backend.log 2>&1 & echo $! > backend_pid
+          npm run start > backend.log 2>&1 & echo $! > backend_pid &
           sleep 3
           echo "Backend logs:"
           tail -n 20 backend.log || echo "No logs available."
@@ -131,13 +131,13 @@ jobs:
         working-directory: frontend
         run: |
           echo "Checking if Vite is installed..."
-          if ! npx vite --version; then
-            echo "❌ ERROR: Vite is missing! Reinstalling..."
-            npm install vite --save-dev
+          if ! test -d node_modules/vite; then
+            echo "❌ ERROR: Vite is missing in node_modules! Reinstalling..."
+            npm install vite --save-dev --force
           fi
 
           echo "Starting frontend..."
-          npx vite > frontend.log 2>&1 & echo $! > frontend_pid
+          npx vite --debug > frontend.log 2>&1 & echo $! > frontend_pid &
           sleep 3
           echo "Frontend logs:"
           tail -n 20 frontend.log || echo "No logs available."
