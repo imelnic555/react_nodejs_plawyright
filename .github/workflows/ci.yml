@@ -62,9 +62,10 @@ jobs:
           npm install @nestjs/common
           npm install @nestjs/core
           npm install
-          npm run build
-          mkdir -p dist
-          ls -lah dist || echo "❌ Build failed! dist/ folder is missing."
+          npm run build || { echo "❌ Backend build failed!"; exit 1; }
+          
+          echo "Verifying backend build output..."
+          ls -lah dist || { echo "❌ dist/ folder is missing after build!"; exit 1; }
 
   build_frontend:
     runs-on: ubuntu-latest
@@ -94,6 +95,13 @@ jobs:
       - name: Start Backend
         working-directory: backend
         run: |
+          echo "Checking for dist/main.js before starting..."
+          if [ ! -f dist/main.js ]; then
+            echo "❌ ERROR: Backend build is missing! Cannot start backend."
+            ls -lah dist  # Show contents for debugging
+            exit 1
+          fi
+
           echo "Starting backend..."
           npm run start > backend.log 2>&1 & echo $! > backend_pid
           sleep 5
