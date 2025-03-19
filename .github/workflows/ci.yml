@@ -6,7 +6,7 @@ on:
       - feature/setup_project  # Using your branch name
 
 jobs:
-  install_dependencies:
+  full_pipeline:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,7 +17,6 @@ jobs:
           echo "Current directory:"
           pwd
           ls -lah
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -42,31 +41,6 @@ jobs:
           npm install --save-dev @playwright/test @cucumber/cucumber tsx ts-node typescript @types/node
           npm list @playwright/test || { echo "❌ ERROR: @playwright/test is missing!"; exit 1; }
           npm list @cucumber/cucumber || { echo "❌ ERROR: @cucumber/cucumber is missing!"; exit 1; }
-          echo "Installing Playwright browsers..."
-          npx playwright install --with-deps
-  
-      - name: Install cuc  Dependencies
-        working-directory: tests
-        run: |
-          npm install --legacy-peer-deps
-          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
-
-      # - name: Debug Cucumber Tags
-      #   run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
-
-
-      - name: Fix Permissions for Cucumber
-        working-directory: tests
-        run: chmod +x node_modules/.bin/cucumber-js
-        
-
-
-  build_backend:
-    runs-on: ubuntu-latest
-    needs: install_dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Build backend
         working-directory: backend
@@ -79,26 +53,12 @@ jobs:
             exit 1
           fi
 
-  build_frontend:
-    runs-on: ubuntu-latest
-    needs: install_dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Build frontend
         working-directory: frontend
         run: |
           npm install
           npm run build
           ls -lah dist || echo "❌ Build failed! dist/ folder is missing."
-
-  start_backend_and_frontend:
-    runs-on: ubuntu-latest
-    needs: [build_backend, build_frontend]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Install Missing Backend Dependencies
         working-directory: backend
@@ -111,7 +71,6 @@ jobs:
           npm run start > backend.log 2>&1 & echo $! > backend_pid
           sleep 5
           tail -n 20 backend.log || echo "No logs available."
-
           echo "Verifying backend API..."
           if ! curl -Is http://localhost:3000/users | head -n 1 | grep "HTTP/1.1 200"; then
             echo "❌ ERROR: Backend API is not responding correctly!"
@@ -127,17 +86,14 @@ jobs:
             echo "❌ ERROR: Vite is missing in node_modules! Reinstalling..."
             npm install vite --save-dev --force
           fi
-
           echo "Starting frontend..."
           npx vite --debug --host > frontend.log 2>&1 & echo $! > frontend_pid
           sleep 5
-
           if ! curl -Is http://localhost:5173/login | head -n 1 | grep "HTTP/1.1 200"; then
             echo "❌ ERROR: Frontend did not start successfully!"
             cat frontend.log
             exit 1
           fi
-
           tail -n 20 frontend.log || echo "No logs available."
 
       - name: Wait for Services
@@ -151,68 +107,28 @@ jobs:
             exit 1
           }
 
-  run_tests:
-    runs-on: ubuntu-latest
-    needs: start_backend_and_frontend
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # - name: Install Playwright Browsers
-      #   working-directory: tests
-      #   run: |
-      #     echo "Installing Playwright browsers..."
-      #     npx playwright install --with-deps
-
-      # - name: Compile TypeScript for Tests
-      #   working-directory: tests
-      #   run: |
-      #     echo "Compiling TypeScript files..."
-      #     npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
-
-      # - name: Ensure `global.d.ts` Exists
-      #   working-directory: tests
-      #   run: |
-      #     echo "Checking if global.d.ts exists..."
-      #     if [ ! -f global.d.ts ]; then
-      #       echo "❌ ERROR: global.d.ts is missing! Creating..."
-      #       echo "declare module '@cucumber/cucumber';" > global.d.ts
-      #       echo "declare module '@playwright/test';" >> global.d.ts
-      #       echo "declare module '../support/world.mjs';" >> global.d.ts
-      #     fi
-          
-      # - name: Install cuc  Dependencies
-      #   working-directory: tests
-      #   run: |
-      #     npm install --legacy-peer-deps
-      #     npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
-
-      # # - name: Debug Cucumber Tags
-      # #   run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
-
-
-      # - name: Fix Permissions for Cucumber
-      #   working-directory: tests
-      #   run: chmod +x node_modules/.bin/cucumber-js
-        
-      # - name: Run Cucumber & Playwright Tests
-      #   run: |
-      #     echo "Waiting for backend and frontend to be ready..."
-      #     timeout 60 npx wait-on  http://localhost:5173 || {
-      #       echo "❌ Backend or frontend did not start in time!"
-      #       curl -I http://localhost:5173 || echo "❌ Frontend without login is NOT running!"
-      #       curl -I http://localhost:5173/login || echo "❌ Frontend with login  is NOT running!"
-      #     }
-
-      - name: Run Cucumber & Playwright Tests
+      - name: Install Playwright Browsers
+        working-directory: tests
         run: |
-          echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on  http://localhost:5173 || {
-            echo "❌ Backend or frontend did not start in time!"
-            curl -I http://localhost:5173 || echo "❌ Frontend without login is NOT running!"
-            curl -I http://localhost:5173/login || echo "❌ Frontend with login  is NOT running!"
-          }
+          echo "Installing Playwright browsers..."
+          npx playwright install --with-deps
 
+      - name: Ensure `global.d.ts` Exists
+        working-directory: tests
+        run: |
+          echo "Checking if global.d.ts exists..."
+          if [ ! -f global.d.ts ]; then
+            echo "❌ ERROR: global.d.ts is missing! Creating..."
+            echo "declare module '@cucumber/cucumber';" > global.d.ts
+            echo "declare module '@playwright/test';" >> global.d.ts
+            echo "declare module '../support/world.mjs';" >> global.d.ts
+          fi
+
+      - name: Install Cucumber Dependencies
+        working-directory: tests
+        run: |
+          npm install --legacy-peer-deps
+          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
 
       - name: Run Cucumber Tests
         working-directory: tests
@@ -224,15 +140,9 @@ jobs:
             exit 1
           fi
 
-
-  stop_backend_and_frontend:
-    runs-on: ubuntu-latest
-    needs: run_tests
-    steps:
       - name: Stop Backend & Frontend
         run: |
           echo "Stopping backend..."
           kill $(cat backend/backend_pid) || echo "Backend was not running."
-
           echo "Stopping frontend..."
           kill $(cat frontend/frontend_pid) || echo "Frontend was not running."
