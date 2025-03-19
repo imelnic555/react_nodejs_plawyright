@@ -1,0 +1,61 @@
+/* Home.css */
+
+.home-container {
+    background: url('/path/to/your/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #fff; /* Adjust color to match your design */
+    font-family: 'Roboto', sans-serif; /* Replace with your preferred font */
+}
+
+.home-header,
+.home-footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+}
+
+.home-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.home-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.home-nav a:hover {
+    color: #ddd;
+}
+
+.home-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.content-wrapper {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.counter button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+}

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login.tsx";
 import UserList from "./components/UserList.tsx";
 import Sidebar from "./components/Sidebar.tsx";
+import Home from "./components/Home.tsx";
 
 const App: React.FC = () => {
     return (
@@ -11,6 +12,7 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/" element={<h2>Home Page</h2>} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/home" element={<Home />} />
                 <Route
                     path="/users"
                     element={
