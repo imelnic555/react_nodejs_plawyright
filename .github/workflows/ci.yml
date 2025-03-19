@@ -167,10 +167,11 @@ jobs:
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          if ! npx cucumber-js --config ./cucumber.cjs; then
+          if ! npx @cucumber/cucumber --config ./cucumber.cjs; then
             echo "❌ ERROR: Cucumber tests failed!"
             exit 1
           fi
+
 
   stop_backend_and_frontend:
     runs-on: ubuntu-latest
