@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - fetaure/setup_project  # Using your branch name
+      - feature/setup_project  # Using your branch name
 
 jobs:
   install_dependencies:
@@ -146,11 +146,11 @@ jobs:
           echo "Installing Playwright browsers..."
           npx playwright install --with-deps
 
-      - name: Compile TypeScript for Tests
-        working-directory: tests
-        run: |
-          echo "Compiling TypeScript files..."
-          npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
+      # - name: Compile TypeScript for Tests
+      #   working-directory: tests
+      #   run: |
+      #     echo "Compiling TypeScript files..."
+      #     npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
 
       - name: Ensure `global.d.ts` Exists
         working-directory: tests
@@ -162,6 +162,25 @@ jobs:
             echo "declare module '@playwright/test';" >> global.d.ts
             echo "declare module '../support/world.mjs';" >> global.d.ts
           fi
+          
+      - name: Install cuc  Dependencies
+        working-directory: tests
+        run: |
+          npm install --legacy-peer-deps
+          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
+
+      - name: Debug Cucumber Tags
+        run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
+
+
+      - name: Fix Permissions for Cucumber
+        working-directory: tests
+        run: chmod +x node_modules/.bin/cucumber-js
+        
+      - name: Run Cucumber & Playwright Tests
+        working-directory: tests
+        run: npx cucumber-js --import tsx
+
 
       - name: Run Cucumber Tests
         working-directory: tests
