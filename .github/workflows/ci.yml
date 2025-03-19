@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - feature/setup_project  # Using your branch name
+      - feature/setup_project
 
 jobs:
   install_dependencies:
@@ -36,8 +36,8 @@ jobs:
         working-directory: tests
         run: |
           echo "Installing test dependencies..."
-          rm -rf node_modules package-lock.json  # Remove old dependencies
-          npm cache clean --force  # Ensure a clean install
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
           npm install --legacy-peer-deps
           npm install --save-dev @playwright/test @cucumber/cucumber tsx ts-node typescript @types/node
           npm list @playwright/test || { echo "❌ ERROR: @playwright/test is missing!"; exit 1; }
@@ -45,13 +45,7 @@ jobs:
           echo "Installing Playwright browsers..."
           npx playwright install --with-deps
 
-      - name: Install cuc  Dependencies
-        working-directory: tests
-        run: |
-          npm install --legacy-peer-deps
-          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
-
-  build_backend:
+  build:
     runs-on: ubuntu-latest
     needs: install_dependencies
     steps:
@@ -69,13 +63,6 @@ jobs:
             exit 1
           fi
 
-  build_frontend:
-    runs-on: ubuntu-latest
-    needs: install_dependencies
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Build frontend
         working-directory: frontend
         run: |
@@ -85,12 +72,15 @@ jobs:
 
   start_services_and_run_tests:
     runs-on: ubuntu-latest
-    needs: [build_backend, build_frontend]
+    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Start backend
+      - name: Install Missing Backend Dependencies
+        working-directory: backend
+        run: npm install
+
       - name: Start Backend
         working-directory: backend
         run: |
@@ -105,13 +95,12 @@ jobs:
             exit 1
           fi
 
-      # Start frontend
       - name: Start Frontend
         working-directory: frontend
         run: |
           echo "Checking if Vite is installed..."
           if ! test -d node_modules/vite; then
-            echo "❌ ERROR: Vite is missing in node_modules! Reinstalling..."
+            echo "❌ ERROR: Vite is missing! Reinstalling..."
             npm install vite --save-dev --force
           fi
           echo "Starting frontend..."
