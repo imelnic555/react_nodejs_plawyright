@@ -42,6 +42,32 @@ jobs:
           npm install --save-dev @playwright/test @cucumber/cucumber tsx ts-node typescript @types/node
           npm list @playwright/test || { echo "❌ ERROR: @playwright/test is missing!"; exit 1; }
           npm list @cucumber/cucumber || { echo "❌ ERROR: @cucumber/cucumber is missing!"; exit 1; }
+          echo "Installing Playwright browsers..."
+          npx playwright install --with-deps
+  
+      - name: Install cuc  Dependencies
+        working-directory: tests
+        run: |
+          npm install --legacy-peer-deps
+          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
+
+      # - name: Debug Cucumber Tags
+      #   run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
+
+
+      - name: Fix Permissions for Cucumber
+        working-directory: tests
+        run: chmod +x node_modules/.bin/cucumber-js
+        
+      - name: Run Cucumber & Playwright Tests
+        run: |
+          echo "Waiting for backend and frontend to be ready..."
+          timeout 60 npx wait-on  http://localhost:5173 || {
+            echo "❌ Backend or frontend did not start in time!"
+            curl -I http://localhost:5173 || echo "❌ Frontend without login is NOT running!"
+            curl -I http://localhost:5173/login || echo "❌ Frontend with login  is NOT running!"
+          }
+
 
   build_backend:
     runs-on: ubuntu-latest
@@ -140,11 +166,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Playwright Browsers
-        working-directory: tests
-        run: |
-          echo "Installing Playwright browsers..."
-          npx playwright install --with-deps
+      # - name: Install Playwright Browsers
+      #   working-directory: tests
+      #   run: |
+      #     echo "Installing Playwright browsers..."
+      #     npx playwright install --with-deps
 
       # - name: Compile TypeScript for Tests
       #   working-directory: tests
@@ -152,39 +178,39 @@ jobs:
       #     echo "Compiling TypeScript files..."
       #     npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
 
-      - name: Ensure `global.d.ts` Exists
-        working-directory: tests
-        run: |
-          echo "Checking if global.d.ts exists..."
-          if [ ! -f global.d.ts ]; then
-            echo "❌ ERROR: global.d.ts is missing! Creating..."
-            echo "declare module '@cucumber/cucumber';" > global.d.ts
-            echo "declare module '@playwright/test';" >> global.d.ts
-            echo "declare module '../support/world.mjs';" >> global.d.ts
-          fi
+      # - name: Ensure `global.d.ts` Exists
+      #   working-directory: tests
+      #   run: |
+      #     echo "Checking if global.d.ts exists..."
+      #     if [ ! -f global.d.ts ]; then
+      #       echo "❌ ERROR: global.d.ts is missing! Creating..."
+      #       echo "declare module '@cucumber/cucumber';" > global.d.ts
+      #       echo "declare module '@playwright/test';" >> global.d.ts
+      #       echo "declare module '../support/world.mjs';" >> global.d.ts
+      #     fi
           
-      - name: Install cuc  Dependencies
-        working-directory: tests
-        run: |
-          npm install --legacy-peer-deps
-          npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
+      # - name: Install cuc  Dependencies
+      #   working-directory: tests
+      #   run: |
+      #     npm install --legacy-peer-deps
+      #     npm install --save-dev reflect-metadata@0.2.2 allure-playwright allure-commandline typescript ts-node @cucumber/cucumber
 
-      - name: Debug Cucumber Tags
-        run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
+      # # - name: Debug Cucumber Tags
+      # #   run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
 
 
-      - name: Fix Permissions for Cucumber
-        working-directory: tests
-        run: chmod +x node_modules/.bin/cucumber-js
+      # - name: Fix Permissions for Cucumber
+      #   working-directory: tests
+      #   run: chmod +x node_modules/.bin/cucumber-js
         
-      - name: Run Cucumber & Playwright Tests
-        run: |
-          echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on  http://localhost:5173 || {
-            echo "❌ Backend or frontend did not start in time!"
-            curl -I http://localhost:5173 || echo "❌ Frontend without login is NOT running!"
-            curl -I http://localhost:5173/login || echo "❌ Frontend with login  is NOT running!"
-          }
+      # - name: Run Cucumber & Playwright Tests
+      #   run: |
+      #     echo "Waiting for backend and frontend to be ready..."
+      #     timeout 60 npx wait-on  http://localhost:5173 || {
+      #       echo "❌ Backend or frontend did not start in time!"
+      #       curl -I http://localhost:5173 || echo "❌ Frontend without login is NOT running!"
+      #       curl -I http://localhost:5173/login || echo "❌ Frontend with login  is NOT running!"
+      #     }
 
 
       - name: Run Cucumber Tests
