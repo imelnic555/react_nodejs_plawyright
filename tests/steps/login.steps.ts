@@ -1,6 +1,6 @@
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
-import { world } from '../support/world.ts';  // Ensure correct import path
+const { Given, When, Then } = require('@cucumber/cucumber');
+const { expect } = require('@playwright/test');
+const { world } = require('../support/world.ts'); // Remove the .ts extension
 
 Given('I am on the login page', async function () {
     await world.init();
@@ -16,6 +16,7 @@ When('I click login', async function () {
     // await world.page.click('Login');
     await world.page.locator('button:has-text("Login")').click();
 });
+
 Then('I should be logged in successfully', async function () {
     await expect(world.page.locator('text=Here will be the list of users')).toBeVisible({ timeout: 10000 });
 });
