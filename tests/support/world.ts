@@ -1,25 +1,39 @@
-import { chromium } from 'playwright';  // ✅ Correct way to import Playwright browser instances
-import type { Browser, BrowserContext, Page } from 'playwright';  // ✅ Import types separately
+// tests/support/world.js
+const { chromium } = require('playwright');
 
-export const world = {
-    browser: null as Browser | null,
-    context: null as BrowserContext | null,
-    page: null as Page | null,
+/**
+ * @type {import('playwright').Browser | null}
+ */
+let browser = null;
+/**
+ * @type {import('playwright').BrowserContext | null}
+ */
+let context = null;
+/**
+ * @type {import('playwright').Page | null}
+ */
+let page = null;
 
-    async init(): Promise<void> {
+const world = {
+    browser,
+    context,
+    page,
+
+    async init() {
         if (!this.browser) {
             console.log("Initializing browser...");
-            this.browser = await chromium.launch({ headless: true });  // ✅ Corrected
+            this.browser = await chromium.launch({ headless: true });
             this.context = await this.browser.newContext();
         }
         if (!this.page) {
             console.log("Initializing new page...");
-            this.page = await this.context!.newPage();
+            // Since we know context is set by this point, we use it to create a new page.
+            this.page = await this.context.newPage();
         }
         console.log("World: Browser and Page initialized");
     },
 
-    async close(): Promise<void> {
+    async close() {
         try {
             if (this.page) {
                 await this.page.close();
@@ -33,11 +47,13 @@ export const world = {
             }
             if (this.browser) {
                 await this.browser.close();
-                console.log("World: Browser closed");
                 this.browser = null;
+                console.log("World: Browser closed");
             }
         } catch (error) {
             console.error("Error in world.close():", error);
         }
     }
 };
+
+module.exports = { world };
