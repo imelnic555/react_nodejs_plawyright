@@ -167,7 +167,7 @@ jobs:
         working-directory: tests
         run: |
           echo "Running Cucumber tests..."
-          if ! npx cucumber-js --import tsx; then
+          if ! npx cucumber-js --config ./cucumber.cjs; then
             echo "❌ ERROR: Cucumber tests failed!"
             exit 1
           fi
