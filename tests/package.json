@@ -1,6 +1,7 @@
 {
   "name": "cucumber-ts-project",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "test": "npx @cucumber/cucumber --config ./cucumber.cjs"
   },

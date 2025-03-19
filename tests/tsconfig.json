@@ -10,9 +10,8 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "noEmit": false,
-    "outDir": "./dist",
-    "typeRoots": ["./node_modules/@types", "./tests"]
+    "outDir": "./dist"
   },
-  "include": ["./**/*.ts", "./**/*.mjs"],
+  "include": ["**/*.ts", "**/*.mjs"],
   "exclude": ["node_modules"]
 }
