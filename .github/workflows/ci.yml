@@ -177,9 +177,12 @@ jobs:
         working-directory: tests
         run: chmod +x node_modules/.bin/cucumber-js
         
-      # - name: Run Cucumber & Playwright Tests
-      #   working-directory: tests
-      #   run: npx cucumber-js --import tsx
+      - name: Run Cucumber & Playwright Tests
+         if ! curl -Is http://localhost:5173/login | head -n 1 | grep "HTTP/1.1 200"; then
+                    echo "❌  "Frontend did not start successfully!"
+                    cat frontend.log
+                    exit 1
+                  fi
 
 
       - name: Run Cucumber Tests
