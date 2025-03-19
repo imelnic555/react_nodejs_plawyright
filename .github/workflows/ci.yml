@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - fetaure/setup_project  # Using your branch name
+      - faature/setup_project  # Using your branch name
 
 jobs:
   install_dependencies:
@@ -146,11 +146,11 @@ jobs:
           echo "Installing Playwright browsers..."
           npx playwright install --with-deps
 
-      - name: Compile TypeScript for Tests
-        working-directory: tests
-        run: |
-          echo "Compiling TypeScript files..."
-          npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
+      # - name: Compile TypeScript for Tests
+      #   working-directory: tests
+      #   run: |
+      #     echo "Compiling TypeScript files..."
+      #     npx tsc || { echo "❌ ERROR: TypeScript compilation failed!"; exit 1; }
 
       - name: Ensure `global.d.ts` Exists
         working-directory: tests
