@@ -1,11 +1,11 @@
 module.exports = {
     default: {
         require: [
-            "ts-node/register",         // Transpile TS files on the fly (with type-checking)
-            "./support/hooks.ts",       // Load hooks
-            "./steps/**/*.ts"           // Load step definitions recursively
+            "ts-node/esm",           // Transpile TS files on the fly
+            "./support/hooks.ts",     // Automatically load hooks
+            "./steps/*.ts"            // Automatically load step definitions
         ],
-        paths: ["./features/*.feature"],  // Feature files location
+        paths: ["./features/*.feature"],  // Correct path for feature files
         format: ["progress"],
         worldParameters: {}
     }

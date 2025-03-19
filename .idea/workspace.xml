@@ -5,22 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab0b6b54-67f1-47b0-b083-fbb186c64e2c" name="Changes" comment="fixed frontesnd1">
-      <change afterPath="$PROJECT_DIR$/backend/src/auth/constants.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/auth/jwt.strategy.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/services/api.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/support/world.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/auth/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/auth/auth.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/auth/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/users/users.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/users/users.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/users/users.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/users/users.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/users/users.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/users/users.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/cucumber.cjs" beforeDir="false" afterPath="$PROJECT_DIR$/tests/cucumber.cjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/playwright.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/playwright.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/steps/login.steps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/steps/login.steps.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/support/hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/support/hooks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/support/world.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +22,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="fetaure/setup_project" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -50,21 +49,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;fetaure/setup__project&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CurrentWork/react_nodejs_playwright&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\CurrentWork\\react_nodejs_playwright\\frontend\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/setup__project",
+    "last_opened_file_path": "D:/CurrentWork/react_nodejs_playwright",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "D:\\CurrentWork\\react_nodejs_playwright\\frontend\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CurrentWork\react_nodejs_playwright" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -84,6 +88,8 @@
       <workItem from="1742225013152" duration="791000" />
       <workItem from="1742275635921" duration="8675000" />
       <workItem from="1742307306267" duration="3786000" />
+      <workItem from="1742376267151" duration="48000" />
+      <workItem from="1742376394824" duration="338000" />
     </task>
     <task id="LOCAL-00001" summary="fixed frontesnd">
       <option name="closed" value="true" />
@@ -101,11 +107,64 @@
       <option name="project" value="LOCAL" />
       <updated>1742294363254</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742369883084</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1742369883084</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742370593195</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1742370593195</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742370969860</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1742370969860</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742371492806</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742371492806</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742372280444</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742372280444</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fixed frontesnd1">
+      <option name="closed" value="true" />
+      <created>1742373370300</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1742373370300</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/tests/support/world.mjs" />
+      </list>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixed backend" />

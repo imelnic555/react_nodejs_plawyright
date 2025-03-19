@@ -1,27 +1,20 @@
 // tests/support/hooks.ts
-import { Before, After } from '@cucumber/cucumber';
-import { chromium } from '@playwright/test';
-import type { CustomWorld } from './world.mjs';
+import { Before, After, AfterAll } from '@cucumber/cucumber';
+import { world } from './world.ts';
 
-Before(async function (this: CustomWorld) {
-    // Note: Do NOT use an arrow function here.
-    this.browser = await chromium.launch({ headless: true });
-    this.context = await this.browser.newContext();
-    this.page = await this.context.newPage();
-    console.log('Browser launched and page created.');
+Before(async function () {
+    console.log("Before hook: initializing resources");
+    await world.init();
 });
 
-After(async function (this: CustomWorld) {
-    if (this.page) {
-        await this.page.close();
-        console.log('Page closed.');
-    }
-    if (this.context) {
-        await this.context.close();
-        console.log('Context closed.');
-    }
-    if (this.browser) {
-        await this.browser.close();
-        console.log('Browser closed.');
-    }
+After(async function () {
+    console.log("After hook: closing scenario resources");
+    await world.close();
+});
+
+AfterAll(async function () {
+    console.log("AfterAll hook: ensuring all global resources are closed");
+    // This hook runs once after all scenarios
+    await world.close();
+    // You can also perform any additional cleanup here if needed.
 });

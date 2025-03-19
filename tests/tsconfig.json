@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "outDir": "./dist",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "noEmit": false,
-    "outDir": "./dist"
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true
   },
-  "include": ["**/*.ts", "**/*.mjs"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

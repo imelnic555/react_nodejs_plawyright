@@ -1,15 +1,18 @@
 {
-  "name": "cucumber-ts-project",
+  "name": "tests",
   "version": "1.0.0",
+  "description": "Tests project for our monorepo",
   "type": "module",
   "scripts": {
-    "test": "npx @cucumber/cucumber --config ./cucumber.cjs"
+    "test": "npx cucumber-js --import tsx"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.51.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^11.2.0",
-    "@playwright/test": "^1.51.1",
-    "playwright": "^1.33.0",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.0.0"
+    "playwright": "^1.51.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3"
   }
 }
