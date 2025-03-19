@@ -114,7 +114,7 @@ jobs:
           npx vite --debug --host > frontend.log 2>&1 & echo $! > frontend_pid
           sleep 5
 
-          if ! curl -Is http://localhost:5173 | head -n 1 | grep "HTTP/1.1 200"; then
+          if ! curl -Is http://localhost:5173/login | head -n 1 | grep "HTTP/1.1 200"; then
             echo "❌ ERROR: Frontend did not start successfully!"
             cat frontend.log
             exit 1
