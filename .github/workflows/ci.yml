@@ -166,6 +166,7 @@ jobs:
       - name: Run Cucumber Tests
         working-directory: tests
         run: |
+          npm install --save-dev @cucumber/cucumber@11.2.0
           echo "Running Cucumber tests..."
           if ! npx @cucumber/cucumber --config ./cucumber.cjs; then
             echo "❌ ERROR: Cucumber tests failed!"
