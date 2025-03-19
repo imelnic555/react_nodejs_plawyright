@@ -4,7 +4,7 @@ const { world } = require('../support/world.ts'); // Remove the .ts extension
 
 Given('I am on the login page', async function () {
     await world.init();
-    await world.page.goto('http://localhost:5173/login');
+    await world.page.goto('http://localhost:5173/login', { timeout: 30000 });
 });
 
 When('I enter {string} and {string}', async function (email, password) {
