@@ -172,9 +172,9 @@ jobs:
       - name: Debug Cucumber Tags
         run: echo "CUCUMBER_TAGS is set to:" $CUCUMBER_TAGS
 
-      # 🔹 Fix Permissions for Cucumber
-      - name: Fix Cucumber Execution Permissions
-        run: chmod +x node_modules/.bin/cucumber-js
+      # # 🔹 Fix Permissions for Cucumber
+      # - name: Fix Cucumber Execution Permissions
+      #   run: chmod +x node_modules/.bin/cucumber-js
 
         
       - name: Run Cucumber & Playwright Tests
