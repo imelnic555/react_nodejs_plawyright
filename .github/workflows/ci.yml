@@ -163,6 +163,12 @@ jobs:
             echo "declare module '../support/world.mjs';" >> global.d.ts
           fi
 
+
+        
+      - name: Run Cucumber & Playwright Tests
+        run: npm run test:all
+
+
       - name: Run Cucumber Tests
         working-directory: tests
         run: |
