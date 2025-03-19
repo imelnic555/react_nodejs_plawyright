@@ -180,9 +180,10 @@ jobs:
       - name: Run Cucumber & Playwright Tests
         run: |
           echo "Waiting for backend and frontend to be ready..."
-          timeout 60 npx wait-on http://localhost:3000/users http://localhost:5173 || {
+          timeout 60 npx wait-on  http://localhost:5173 || {
             echo "❌ Backend or frontend did not start in time!"
-            curl -I http://localhost:5173/login || echo "❌ Frontend is NOT running!"
+            curl -I http://localhost:5173 || echo "❌ Frontend without login is NOT running!"
+            curl -I http://localhost:5173/login || echo "❌ Frontend with login  is NOT running!"
           }
 
 
