@@ -166,6 +166,7 @@ jobs:
 
         
       - name: Run Cucumber & Playwright Tests
+        working-directory: tests
         run: npm run test:all
 
 
