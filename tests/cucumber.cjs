@@ -1,11 +1,11 @@
 module.exports = {
     default: {
         require: [
-            "ts-node/register",        // For CommonJS transpilation
-            "./support/hooks.ts",      // Load hooks
-            "./steps/**/*.ts"          // Load step definitions recursively
+            "ts-node/register/transpile-only",  // Skip type-checking for faster transpilation
+            "./support/hooks.ts",
+            "./steps/**/*.ts"
         ],
-        paths: ["./features/*.feature"], // Feature files
+        paths: ["./features/*.feature"],
         format: ["progress"],
         worldParameters: {}
     }
