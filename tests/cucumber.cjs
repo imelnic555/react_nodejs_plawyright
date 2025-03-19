@@ -1,12 +1,11 @@
-// cucumber.cjs
 module.exports = {
     default: {
         require: [
-            "ts-node/register",          // Transpile TS files on the fly (CommonJS)
-            "./support/hooks.ts",        // Automatically load hooks (adjust extension if needed)
-            "./steps/**/*.ts"            // Automatically load step definitions (recursive)
+            "ts-node/register",        // For CommonJS transpilation
+            "./support/hooks.ts",      // Load hooks
+            "./steps/**/*.ts"          // Load step definitions recursively
         ],
-        paths: ["./features/*.feature"],  // Correct path for feature files
+        paths: ["./features/*.feature"], // Feature files
         format: ["progress"],
         worldParameters: {}
     }
