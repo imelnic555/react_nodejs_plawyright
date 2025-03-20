@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchUsers } from '../services/api.ts';
-import '../css/Home.css';
 import React from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from './Sidebar.tsx';
+import '../css/Home.css';
+
 
 function UserList() {
     const { data: users, isLoading, error } = useQuery({
@@ -14,19 +15,28 @@ function UserList() {
     if (error) return <p>Error loading users!</p>;
 
     return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-            {/* Sidebar appears at the top */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Sidebar />
-
-            {/* Main content is rendered below the Sidebar */}
             <div
                 style={{
-                    padding: "20px",
-                    marginTop: "20px", // Adjust this value if further separation is needed
-                    maxHeight: "400px",
-                    overflowY: "auto",
+                    marginTop: '20px',
+                    padding: '20px',
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)', // Temporary debug styling
+                    border: '1px solid red',
                 }}
             >
+
+                <div className="search-container">
+                    <input
+                        type="text"
+                        placeholder="Search items..."
+                        // value={searchQuery}
+                        // onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: '100%', padding: '8px' }}
+                    />
+                </div>
+
+
                 <ul>
                     {users?.map((user: any) => (
                         <li key={user.id}>{user.name}</li>

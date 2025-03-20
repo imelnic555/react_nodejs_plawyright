@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar.tsx';
+import '../css/Home.css';
 
 interface Item {
     id: number;

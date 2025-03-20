@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab0b6b54-67f1-47b0-b083-fbb186c64e2c" name="Changes" comment="added new branch">
-      <change afterPath="$PROJECT_DIR$/frontend/src/css/Sidebar.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/global.d.ts" afterDir="false" />
+    <list default="true" id="ab0b6b54-67f1-47b0-b083-fbb186c64e2c" name="Changes" comment="added css  and mdulraztion">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/css/Home.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Home.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Home.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Sidebar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/global.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/global.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css/Home.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Home.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css/Sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Sidebar.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +90,7 @@
       <workItem from="1742376267151" duration="48000" />
       <workItem from="1742376394824" duration="11250000" />
       <workItem from="1742393639953" duration="2111000" />
-      <workItem from="1742448659517" duration="12497000" />
+      <workItem from="1742448659517" duration="13874000" />
     </task>
     <task id="LOCAL-00001" summary="fixed frontesnd">
       <option name="closed" value="true" />
@@ -224,7 +220,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742395457242</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="added css  and mdulraztion">
+      <option name="closed" value="true" />
+      <created>1742464940105</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1742464940105</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -235,6 +239,7 @@
     <MESSAGE value="fixed frontesnd" />
     <MESSAGE value="fixed frontesnd1" />
     <MESSAGE value="added new branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="added new branch" />
+    <MESSAGE value="added css  and mdulraztion" />
+    <option name="LAST_COMMIT_MESSAGE" value="added css  and mdulraztion" />
   </component>
 </project>
