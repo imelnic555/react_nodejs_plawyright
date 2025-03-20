@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../css/Home.css';
+import Sidebar from './Sidebar.tsx';
 
 interface Item {
     id: number;
@@ -7,7 +7,6 @@ interface Item {
 }
 
 const Home: React.FC = () => {
-    // Sample list of items (could be fetched from an API)
     const items: Item[] = [
         { id: 1, name: 'Apple' },
         { id: 2, name: 'Banana' },
@@ -18,33 +17,30 @@ const Home: React.FC = () => {
         { id: 7, name: 'Grape' },
     ];
 
-    // State to store the current search query
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Filter items based on the search query (case-insensitive)
     const filteredItems = items.filter(item =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
-        <div className="home-container">
-            <header className="home-header">
-                <h1>Welcome to the Home Page</h1>
-            </header>
-            <nav className="home-nav">
-                <ul>
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/users">Users</a></li>
-                    <li><a href="/settings">Settings</a></li>
-                </ul>
-            </nav>
-            <main className="home-content">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Sidebar />
+            <div
+                style={{
+                    marginTop: '20px',
+                    padding: '20px',
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)', // Temporary debug styling
+                    border: '1px solid red',
+                }}
+            >
                 <div className="search-container">
                     <input
                         type="text"
                         placeholder="Search items..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: '100%', padding: '8px' }}
                     />
                 </div>
                 <ul className="item-list">
@@ -55,10 +51,7 @@ const Home: React.FC = () => {
                         <li>No items found matching your search.</li>
                     )}
                 </ul>
-            </main>
-            <footer className="home-footer">
-                <p>&copy; {new Date().getFullYear()} My Website</p>
-            </footer>
+            </div>
         </div>
     );
 };

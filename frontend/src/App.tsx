@@ -17,7 +17,7 @@ const App: React.FC = () => {
                     path="/users"
                     element={
                         <div style={{ display: "flex" }}>
-                            <Sidebar />
+                            {/*<Sidebar />*/}
                             <UserList />
                         </div>
                     }

@@ -5,28 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab0b6b54-67f1-47b0-b083-fbb186c64e2c" name="Changes" comment="added new branch">
-      <change afterPath="$PROJECT_DIR$/frontend/css/Home.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Home.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/css/Sidebar.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/global.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/app.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/app.module.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/auth/auth.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/auth/auth.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/auth/auth.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/auth/auth.module.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/auth/auth.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/auth/auth.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/auth/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/auth/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/auth/dto/login.dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/auth/dto/login.dto.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/auth/jwt.strategy.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/auth/jwt.strategy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/users/users.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/users/users.controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/users/users.dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/users/users.dto.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/users/users.entity.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/users/users.entity.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/users/users.module.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/users/users.module.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/users/users.repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/users/users.repository.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dist/users/users.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/users/users.service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/css/Home.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Home.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Home.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/UserList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/global.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/global.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,25 +48,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/setup__project",
-    "last_opened_file_path": "D:/CurrentWork/react_nodejs_playwright/frontend/src/components",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "D:\\CurrentWork\\react_nodejs_playwright\\frontend\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/setup__project&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CurrentWork/react_nodejs_playwright/frontend/src/components&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\CurrentWork\\react_nodejs_playwright\\frontend\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\CurrentWork\react_nodejs_playwright\frontend\src\components" />
       <recent name="D:\CurrentWork\react_nodejs_playwright" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\CurrentWork\react_nodejs_playwright\frontend\src" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -103,7 +93,8 @@
       <workItem from="1742307306267" duration="3786000" />
       <workItem from="1742376267151" duration="48000" />
       <workItem from="1742376394824" duration="11250000" />
-      <workItem from="1742393639953" duration="1746000" />
+      <workItem from="1742393639953" duration="2111000" />
+      <workItem from="1742448659517" duration="12497000" />
     </task>
     <task id="LOCAL-00001" summary="fixed frontesnd">
       <option name="closed" value="true" />
@@ -225,16 +216,19 @@
       <option name="project" value="LOCAL" />
       <updated>1742387621713</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added new branch">
+      <option name="closed" value="true" />
+      <created>1742395457242</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1742395457242</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-    <option name="exactExcludedFiles">
-      <list>
-        <option value="$PROJECT_DIR$/tests/support/world.mjs" />
-      </list>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixed backend" />

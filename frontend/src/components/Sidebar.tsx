@@ -1,14 +1,20 @@
+// Sidebar.tsx
 import React from 'react';
+import "../css/Sidebar.css"; // Adjust path if necessary
 
 const Sidebar: React.FC = () => {
     return (
-        <div style={{ width: '250px', background: '#f4f4f4', padding: '20px', height: '100vh' }}>
-            <h2>Sidebar</h2>
-            <ul>
-                <li><a href="home">Home</a></li>
-                <li><a href="userList">users</a></li>
-                <li><a href="settings">Settings</a></li>
-            </ul>
+        <div className="sidebar-container">
+            <header className="sidebar-header">
+                <h1>Welcome to the Home Page</h1>
+            </header>
+            <nav className="sidebar-nav">
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/users">Users</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                </ul>
+            </nav>
         </div>
     );
 };
